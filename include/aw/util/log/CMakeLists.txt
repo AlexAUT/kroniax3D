@@ -1,0 +1,7 @@
+add_to_target(awUtil PUBLIC consoleSink.hpp)
+add_to_target(awUtil PUBLIC fileSink.hpp)
+add_to_target(awUtil PUBLIC level.hpp)
+add_to_target(awUtil PUBLIC log.hpp)
+add_to_target(awUtil PUBLIC logger.hpp)
+add_to_target(awUtil PUBLIC module.hpp)
+add_to_target(awUtil PUBLIC sink.hpp)

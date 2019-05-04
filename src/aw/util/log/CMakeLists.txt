@@ -1,0 +1,6 @@
+add_to_target(awUtil PRIVATE consoleSink.cpp)
+add_to_target(awUtil PRIVATE fileSink.cpp)
+add_to_target(awUtil PRIVATE log.cpp)
+add_to_target(awUtil PRIVATE logger.cpp)
+add_to_target(awUtil PRIVATE module.cpp)
+add_to_target(awUtil PRIVATE sink.cpp)
