@@ -19,8 +19,9 @@ endif()
 
 include(cmake/glm.cmake)
 include(cmake/fmt.cmake)
+include(cmake/cereal.cmake)
 include(cmake/sfml.cmake)
 
-if((NOT CMAKE_SYSTEM_NAME MATCHES "Android") AND (NOT CMAKE_SYSTEM_NAME MATCHES "Emscripten")
+if((NOT CMAKE_SYSTEM_NAME MATCHES "Android") AND (NOT CMAKE_SYSTEM_NAME MATCHES "Emscripten"))
   include(cmake/catch2.cmake)
 endif()

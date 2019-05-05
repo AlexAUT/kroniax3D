@@ -25,6 +25,7 @@ else()
   )
 endif()
 
+return()
 # Build dependencies
 execute_process(
   COMMAND ${PREFIX_COMMAND} ${CMAKE_COMMAND} "--build" "."

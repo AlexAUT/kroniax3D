@@ -2,6 +2,7 @@ project(awTest)
 
 set(TEST_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/util/containers/testRingBuffer.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/util/message/testBus.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/util/file/testPath.cpp
 )
 

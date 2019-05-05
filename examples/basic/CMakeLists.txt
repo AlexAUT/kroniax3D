@@ -10,7 +10,7 @@ add_executable(${PROJECT_NAME} main.cpp)
 set(AW_ENGINE_DIR ../../ CACHE STRING "Path to the awEngine git repository")
 
 #set(AW_TESTS OFF CACHE BOOL "Disable tests" FORCE)
-set(AW_BUILD_DEPENDENCIES OFF CACHE BOOL "Build engine dependencies" FORCE)
+set(AW_BUILD_DEPENDENCIES ON CACHE BOOL "Build engine dependencies" FORCE)
 enable_testing()
 message(STATUS "AWEngine Dir: ${AW_ENGINE_DIR}")
 add_subdirectory(${AW_ENGINE_DIR} "awEngine")

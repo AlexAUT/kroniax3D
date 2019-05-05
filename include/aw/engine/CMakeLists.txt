@@ -1,2 +1,5 @@
+add_to_target(awEngine PUBLIC config.hpp)
 add_to_target(awEngine PUBLIC engine.hpp)
+add_to_target(awEngine PUBLIC logEngine.hpp)
 add_to_target(awEngine PUBLIC window.hpp)
+add_to_target(awEngine PUBLIC windowEvent.hpp)
