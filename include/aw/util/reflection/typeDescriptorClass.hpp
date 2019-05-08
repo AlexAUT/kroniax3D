@@ -40,13 +40,7 @@ public:
   ClassMember(std::string name, ConstRefGetter getter) : mName(name), mConstRefGetter(getter) {}
 
   constexpr std::string_view name() const { return mName; }
-  constexpr const MemberType& value(const OwningClass& instance) const
-  {
-    if (mHasMemberPtr)
-      return instance.*mConstMemberPtr;
-    else
-      return (instance.*mConstRefGetter)();
-  }
+  MemberType& value(OwningClass& instance) { return instance.*mMemberPtr; }
 
   static inline auto& underlyingDescriptor() { return TypeResolver<MemberType>::get(); }
 
@@ -92,22 +86,22 @@ private:
 
 #define REFLECT() static inline auto& getTypeDescriptor();
 
-#define REFLECT_BEGIN(TypeName)                                                                                        \
-  template <>                                                                                                          \
-  auto& aw::reflect::getReflection<TypeName>()                                                                         \
-  {                                                                                                                    \
-    using T = TypeName;                                                                                                \
-    static ClassTypeDescriptor descriptor                                                                    \
-  (                                                                                                                  \
+#define REFLECT_BEGIN(TypeName)                                                                    \
+  template <>                                                                                      \
+  inline auto& aw::reflect::getReflection<TypeName>()                                              \
+  {                                                                                                \
+    using T = TypeName;                                                                            \
+    static ClassTypeDescriptor descriptor                                                                              \
+  (                                                                                                                    \
 #TypeName
 
 #define REFLECT_MEMBER(name) , ClassMember(#name, &T::name)
 #define REFLECT_PRIVATE_MEMBER(name, getter) , ClassMember(#name, getter)
 
-#define REFLECT_END(TypeName)                                                                                          \
-);                                                                                                                     \
-  return descriptor;                                                                                                   \
-  }                                                                                                                    \
+#define REFLECT_END(TypeName)                                                                      \
+);                                                                                                 \
+  return descriptor;                                                                               \
+  }                                                                                                \
   auto& TypeName::getTypeDescriptor() { return aw::reflect::getReflection<TypeName>(); }
 
 } // namespace aw::reflect

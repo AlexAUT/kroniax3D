@@ -13,11 +13,11 @@ public:
   StringTypeDescriptor() : TypeDescriptor("std::string", sizeof(std::string)) {}
 
   // To be consistent with other typedescriptors
-  const std::string& getValue(const std::string& string) const { return string; }
+  std::string& value(std::string& string) { return string; }
 };
 
 template <>
-auto& getExternalDescriptor<std::string>()
+inline auto& getExternalDescriptor<std::string>()
 {
   static StringTypeDescriptor instance;
   return instance;

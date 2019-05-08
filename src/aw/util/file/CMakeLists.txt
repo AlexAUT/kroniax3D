@@ -1,1 +1,4 @@
+add_to_target(awUtil PRIVATE inputStream.cpp)
+add_to_target(awUtil PRIVATE outputStream.cpp)
 add_to_target(awUtil PRIVATE path.cpp)
+add_to_target(awUtil PRIVATE pathRegistry.cpp)

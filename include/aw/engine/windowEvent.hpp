@@ -1,11 +1,12 @@
 #pragma once
 
-namespace aw
+namespace aw::windowEvent
 {
-namespace event
+struct Resized
 {
-struct WindowResized
+  unsigned x, y;
+};
+struct Closed
 {
 };
-} // namespace event
-} // namespace aw
+} // namespace aw::windowEvent

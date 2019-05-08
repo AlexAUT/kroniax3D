@@ -42,7 +42,7 @@ public:
   constexpr static SubscriptionId npos = std::numeric_limits<unsigned>::max();
 
 public:
-  void broadcast(const EventType& event);
+  void broadcast(const EventType& event) const;
 
   Subscription<EventType> subscribe(Callback callback);
   [[nodiscard]] SubscriptionId subscribeUnsafe(Callback callback);
@@ -80,7 +80,7 @@ void Subscription<EventType>::unsubscribe()
 }
 
 template <typename EventType>
-void Channel<EventType>::broadcast(const EventType& event)
+void Channel<EventType>::broadcast(const EventType& event) const
 {
   for (auto& sub : mSubscribers)
     sub(event);

@@ -1,1 +1,4 @@
+add_to_target(awUtil PUBLIC inputStream.hpp)
+add_to_target(awUtil PUBLIC outputStream.hpp)
 add_to_target(awUtil PUBLIC path.hpp)
+add_to_target(awUtil PUBLIC pathRegistry.hpp)

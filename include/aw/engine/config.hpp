@@ -3,36 +3,40 @@
 #include <aw/util/reflection/typeDescriptorClass.hpp>
 #include <aw/util/reflection/types/primitiveTypes.hpp>
 #include <aw/util/reflection/types/string.hpp>
-#include <aw/util/serialization/nameValuePair.hpp>
 
 #include <string>
+
+namespace aw
+{
+class PathRegistry;
+}
 
 namespace aw::engine
 {
 struct Config
 {
-  int test;
+  static Config load();
+  static void save();
+
   struct AppConfig
   {
-    std::string name;
+    std::string name{"awEngine"};
 
     REFLECT();
   } application;
 
   struct WindowConfig
   {
-    unsigned width;
-    unsigned height;
-    bool vsync;
-    unsigned frameLimit;
+    unsigned width{800};
+    unsigned height{600};
+    bool vsync{true};
+    unsigned frameLimit{0};
 
-    bool grabCursor;
-    bool cursorVisible;
+    bool grabCursor{false};
+    bool cursorVisible{true};
 
-    unsigned depthBits;
-    unsigned stencilBits;
-
-    unsigned antialiasing;
+    unsigned depthBits{8};
+    unsigned stencilBits{0};
 
     REFLECT();
   } window;
@@ -60,13 +64,10 @@ REFLECT_MEMBER(cursorVisible)
 REFLECT_MEMBER(depthBits)
 REFLECT_MEMBER(stencilBits)
 
-REFLECT_MEMBER(antialiasing)
-
 REFLECT_END(aw::engine::Config::WindowConfig)
 
 // Reflect Config
 REFLECT_BEGIN(aw::engine::Config)
-REFLECT_MEMBER(test)
 REFLECT_MEMBER(application)
 REFLECT_MEMBER(window)
 REFLECT_END(aw::engine::Config)

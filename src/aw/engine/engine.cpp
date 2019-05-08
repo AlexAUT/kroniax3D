@@ -5,8 +5,6 @@
 #include <aw/opengl/opengl.hpp>
 #include <aw/util/log/log.hpp>
 
-#include <SFML/Window/Event.hpp>
-
 #include <iostream>
 
 #ifdef AW_OS_EMSCRIPTEN
@@ -20,13 +18,12 @@ void step()
 } // namespace priv
 #endif
 
-namespace aw
+namespace aw ::engine
 {
-Engine::Engine() : mWindow({800, 600}, "Engine test")
+Engine::Engine()
 {
-  mWindow.setVerticalSyncEnabled(true);
   assert(log::getDefaultLogger() && "You need to set the default logger before using the engine!");
-}
+} // namespace aw::engineEngine::Engine():mWindow(
 
 int Engine::run()
 {
@@ -35,28 +32,35 @@ int Engine::run()
   priv::instance = this;
   emscripten_set_main_loop(priv::step, 60, 1);
 #else
-  while (mWindow.isOpen())
+  while (mRunning)
   {
     step();
   }
 #endif
   return 0;
-} // namespace aw
+}
 
 void Engine::step()
 {
-  sf::Event event;
-  while (mWindow.pollEvent(event))
-  {
-    if (event.type == sf::Event::MouseMoved)
-    {
-      LOG_ENGINE(log::Level::Debug, "Mouse moved?");
-    }
-    if (event.type == sf::Event::Closed)
-      mWindow.close();
-  }
-  glClearColor(1.0f, 1.0f, 0.f, 1.f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  mWindow.display();
+  mMainWindow.handleEvents();
+
+  mMainWindow.display();
 }
-} // namespace aw
+
+void Engine::terminate(bool exitCode)
+{
+  mExitCode = exitCode;
+  mRunning = false;
+}
+
+msg::Bus& Engine::messageBus()
+{
+  return mMessageBus;
+}
+
+const msg::Bus& Engine::messageBus() const
+{
+  return mMessageBus;
+}
+
+} // namespace aw::engine

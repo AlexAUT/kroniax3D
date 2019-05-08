@@ -20,10 +20,13 @@ public:
   template <typename EventType>
   Channel<EventType>& channel();
 
+  template <typename EventType>
+  const Channel<EventType>& channel() const;
+
 private:
 private:
   using TypeCounter = aw::type::Counter<Bus>;
-  std::vector<std::unique_ptr<ChannelBase>> mChannels;
+  mutable std::vector<std::unique_ptr<ChannelBase>> mChannels;
 };
 } // namespace aw::msg
 
@@ -32,6 +35,21 @@ namespace aw::msg
 {
 template <typename EventType>
 Channel<EventType>& Bus::channel()
+{
+  auto channelIndex = TypeCounter::id<EventType>();
+
+  if (mChannels.size() <= channelIndex)
+    mChannels.resize(channelIndex + 1);
+
+  if (!mChannels[channelIndex])
+  {
+    mChannels[channelIndex].reset(new Channel<EventType>());
+  }
+  return *static_cast<Channel<EventType>*>(mChannels[channelIndex].get());
+}
+
+template <typename EventType>
+const Channel<EventType>& Bus::channel() const
 {
   auto channelIndex = TypeCounter::id<EventType>();
 

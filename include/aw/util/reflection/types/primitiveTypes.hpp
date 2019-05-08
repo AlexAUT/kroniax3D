@@ -18,52 +18,52 @@ public:
   PrimitiveTypeDescriptor(const char* name) : TypeDescriptor(name, sizeof(PrimitiveType)) {}
 
   // To be consistent with other typedescriptors
-  const PrimitiveType& getValue(const PrimitiveType& type) const { return type; }
+  PrimitiveType& value(PrimitiveType& type) { return type; }
 };
 template <>
-auto& getExternalDescriptor<bool>()
+inline auto& getExternalDescriptor<bool>()
 {
   static PrimitiveTypeDescriptor<bool> instance("bool");
   return instance;
 }
 
 template <>
-auto& getExternalDescriptor<char>()
+inline auto& getExternalDescriptor<char>()
 {
   static PrimitiveTypeDescriptor<char> instance("char");
   return instance;
 }
 
 template <>
-auto& getExternalDescriptor<unsigned char>()
+inline auto& getExternalDescriptor<unsigned char>()
 {
   static PrimitiveTypeDescriptor<char> instance("uchar");
   return instance;
 }
 
 template <>
-auto& getExternalDescriptor<int>()
+inline auto& getExternalDescriptor<int>()
 {
   static PrimitiveTypeDescriptor<int> instance("int");
   return instance;
 }
 
 template <>
-auto& getExternalDescriptor<unsigned>()
+inline auto& getExternalDescriptor<unsigned>()
 {
   static PrimitiveTypeDescriptor<unsigned> instance("uint");
   return instance;
 }
 
 template <>
-auto& getExternalDescriptor<float>()
+inline auto& getExternalDescriptor<float>()
 {
   static PrimitiveTypeDescriptor<float> instance("float");
   return instance;
 }
 
 template <>
-auto& getExternalDescriptor<double>()
+inline auto& getExternalDescriptor<double>()
 {
   static PrimitiveTypeDescriptor<double> instance("double");
   return instance;
