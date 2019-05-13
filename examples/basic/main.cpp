@@ -3,12 +3,14 @@
 
 #include <aw/engine/engine.hpp>
 #include <aw/engine/logEngine.hpp>
-#include <aw/engine/windowEvent.hpp>
+#include <aw/engine/window/event.hpp>
 #include <aw/util/log/consoleSink.hpp>
 #include <aw/util/log/log.hpp>
 #include <aw/util/log/logger.hpp>
 
 #include <aw/util/file/pathRegistry.hpp>
+
+#include "basicState.hpp"
 
 #include <fstream>
 
@@ -21,8 +23,8 @@ int main()
 
   aw::engine::Engine engine;
 
-  auto sub = engine.messageBus().channel<aw::windowEvent::Closed>().subscribe(
-      [&](const auto&) { engine.terminate(); });
+  auto initialState = std::make_shared<BasicState>(engine);
+  engine.stateMachine().pushState(initialState);
 
   int returnValue = engine.run();
 

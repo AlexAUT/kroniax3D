@@ -3,12 +3,12 @@
 #include <aw/util/reflection/reflection.hpp>
 #include <aw/util/reflection/typeDescriptor.hpp>
 #include <aw/util/reflection/typeResolver.hpp>
+#include <aw/util/types.hpp>
 
 #include <aw/util/type/staticForLoop.hpp>
 
 #include <functional>
 #include <iostream>
-#include <stddef.h>
 #include <string>
 #include <vector>
 
@@ -72,7 +72,7 @@ public:
   {
   }
 
-  constexpr std::size_t memberCount() const { return sizeof...(MemberTypes); }
+  constexpr size_t memberCount() const { return sizeof...(MemberTypes); }
 
   template <typename Function>
   constexpr void forAllMembers(Function&& fun)

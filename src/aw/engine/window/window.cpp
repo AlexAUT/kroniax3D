@@ -1,7 +1,7 @@
-#include <aw/engine/window.hpp>
+#include <aw/engine/window/window.hpp>
 
 #include <aw/engine/logEngine.hpp>
-#include <aw/engine/windowEvent.hpp>
+#include <aw/engine/window/event.hpp>
 
 #include <SFML/Window/Event.hpp>
 
@@ -31,8 +31,16 @@ void Window::handleEvents()
     switch (event.type)
     {
     case sf::Event::Closed:
-      mMessageBus.channel<windowEvent::Closed>().broadcast(windowEvent::Closed{});
+      mMessageBus.channel<windowEvent::Closed>().broadcast({});
       break;
+    case sf::Event::Resized:
+      mMessageBus.channel<windowEvent::Resized>().broadcast({event.size.width, event.size.height});
+      break;
+    case sf::Event::GainedFocus:
+      mMessageBus.channel<windowEvent::GainedFocus>().broadcast({});
+      break;
+    case sf::Event::LostFocus:
+      mMessageBus.channel<windowEvent::LostFocus>().broadcast({});
     default:
       LOG_ENGINE(log::Level::Warning, "Event translation not implemented {}\n", event.type);
     }

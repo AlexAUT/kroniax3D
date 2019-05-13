@@ -42,7 +42,12 @@ int Engine::run()
 
 void Engine::step()
 {
+  const auto dt = mFrameClock.restart();
+
   mMainWindow.handleEvents();
+
+  mStateMachine.update(dt);
+  mStateMachine.render();
 
   mMainWindow.display();
 }
@@ -61,6 +66,15 @@ msg::Bus& Engine::messageBus()
 const msg::Bus& Engine::messageBus() const
 {
   return mMessageBus;
+}
+
+StateMachine& Engine::stateMachine()
+{
+  return mStateMachine;
+}
+const StateMachine& Engine::stateMachine() const
+{
+  return mStateMachine;
 }
 
 } // namespace aw::engine

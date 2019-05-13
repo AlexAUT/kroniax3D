@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <iostream>
 #include <limits>
 #include <vector>
 
@@ -22,8 +23,14 @@ public:
   using SubscriptionId = typename Channel<EventType>::SubscriptionId;
 
 public:
+  Subscription() = delete;
   Subscription(Channel<EventType> & channel, SubscriptionId subscriptionId);
   ~Subscription();
+
+  Subscription(const Subscription&) = delete;
+  Subscription& operator=(const Subscription) = delete;
+  Subscription(Subscription && o);
+  Subscription& operator=(Subscription&& o);
 
   void unsubscribe();
 
@@ -73,10 +80,27 @@ Subscription<EventType>::~Subscription()
 }
 
 template <typename EventType>
+Subscription<EventType>::Subscription(Subscription&& o) :
+    mChannel(o.mChannel),
+    mSubscriptionId(o.mSubscriptionId)
+{
+  o.mSubscriptionId = Channel<EventType>::npos;
+}
+template <typename EventType>
+Subscription<EventType>& Subscription<EventType>::operator=(Subscription<EventType>&& o)
+{
+  mSubscriptionId = o.mSubscriptionId;
+  o.mSubscriptionId = Channel<EventType>::npos;
+  return Subscription(o);
+}
+
+template <typename EventType>
 void Subscription<EventType>::unsubscribe()
 {
   if (mSubscriptionId != Channel<EventType>::npos)
+  {
     mChannel.unsubscribe(mSubscriptionId);
+  }
 }
 
 template <typename EventType>

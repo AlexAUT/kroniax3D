@@ -5,7 +5,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 17)
 
 project(awExampleBasic)
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp basicState.cpp)
 
 set(AW_ENGINE_DIR ../../ CACHE STRING "Path to the awEngine git repository")
 

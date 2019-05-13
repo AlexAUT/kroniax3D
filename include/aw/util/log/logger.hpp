@@ -34,8 +34,8 @@ public:
   void addSink(std::shared_ptr<log::Sink> sink);
 
   template <typename... Args>
-  void log(const Module& module, const char* fileName, int lineNumber, const char* functionName, Level level,
-           const char* formatString, Args&&... args);
+  void log(const Module& module, const char* fileName, int lineNumber, const char* functionName,
+           Level level, const char* formatString, Args&&... args);
 
 private:
   void sinkThread();
@@ -68,8 +68,8 @@ inline bool Logger::isLevelEnabled(Level level) const
 }
 
 template <typename... Args>
-void Logger::log(const Module& module, const char* fileName, int lineNumber, const char* functionName, Level level,
-                 const char* formatString, Args&&... args)
+void Logger::log(const Module& module, const char* fileName, int lineNumber,
+                 const char* functionName, Level level, const char* formatString, Args&&... args)
 {
   if (!isLevelEnabled(level) || !module.isLevelEnabled(level))
     return;
@@ -86,7 +86,7 @@ void Logger::log(const Module& module, const char* fileName, int lineNumber, con
   mMessageBuffer[loc].lineNumber = lineNumber;
   mMessageBuffer[loc].functionName = functionName;
   mMessageBuffer[loc].level = level;
-  fmt::format_to(mMessageBuffer[loc].message, formatString, std::forward<Args...>(args)...);
+  fmt::format_to(mMessageBuffer[loc].message, formatString, std::forward<Args>(args)...);
 
   std::atomic_thread_fence(std::memory_order_seq_cst);
   mBufferController.increateWriter();

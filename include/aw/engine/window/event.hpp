@@ -2,11 +2,20 @@
 
 namespace aw::windowEvent
 {
+struct Closed
+{
+};
+
 struct Resized
 {
-  unsigned x, y;
+  unsigned width, height;
 };
-struct Closed
+
+struct LostFocus
+{
+};
+
+struct GainedFocus
 {
 };
 } // namespace aw::windowEvent

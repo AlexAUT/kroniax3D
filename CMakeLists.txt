@@ -32,6 +32,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 option(AW_TESTS "Build and run tests" OFF)
 option(AW_BUILD_ENGINE "Build engine" ON)
+option(AW_BUILD_GRAPHICS "Build graphics module" ON)
 option(AW_BUILD_DEPENDENCIES "Build dependencies for current platform" OFF)
 
 message(STATUS "Build depdencies: ${AW_BUILD_DEPENDENCIES}")
@@ -69,6 +70,14 @@ add_subdirectory(include/aw/opengl)
 add_subdirectory(src/aw/opengl)
 target_include_directories(awOpenGL PUBLIC ${AW_INCLUDE_DIR})
 include(cmake/addOpenGLDependencies.cmake)
+
+if(AW_BUILD_GRAPHICS)
+  add_library(awGraphics)
+  add_subdirectory(include/aw/graphics/)
+  add_subdirectory(src/aw/graphics/)
+  target_include_directories(awGraphics PUBLIC ${AW_INCLUDE_DIR})
+  target_link_libraries(awGraphics PUBLIC awOpenGL)
+endif()
 
 if(AW_BUILD_ENGINE)
   add_library(awEngine src/aw/engine/engine.cpp)

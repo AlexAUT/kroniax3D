@@ -3,6 +3,7 @@
 #include <aw/util/message/channel.hpp>
 #include <aw/util/type/typeCounter.hpp>
 
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -58,6 +59,7 @@ const Channel<EventType>& Bus::channel() const
 
   if (!mChannels[channelIndex])
   {
+    std::cout << "Create channel!" << std::endl;
     mChannels[channelIndex].reset(new Channel<EventType>());
   }
   return *static_cast<Channel<EventType>*>(mChannels[channelIndex].get());
