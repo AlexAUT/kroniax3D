@@ -10,7 +10,7 @@ InputStream::InputStream(std::string_view path) : std::istream(nullptr), mPath(p
 #ifdef AW_OS_ANDROID
   if (aw::path::isAsset(mPath))
   {
-    auto* buffer = new AndroidAssetBuffer(absPath);
+    auto* buffer = new AndroidAssetBuffer(mPath);
     mIsOpen = buffer->isOpen();
     if (mIsOpen)
       rdbuf(buffer);

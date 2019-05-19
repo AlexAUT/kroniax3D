@@ -1,6 +1,7 @@
 #include "basicState.hpp"
 
 #include <aw/engine/engine.hpp>
+#include <aw/engine/resources/loaders/assimpLoader.hpp>
 
 #include "logApp.hpp"
 
@@ -9,6 +10,9 @@ BasicState::BasicState(aw::engine::Engine& engine) :
     WindowEventSubscriber(engine.messageBus()),
     mEngine(engine)
 {
+  aw::engine::AssimpLoader loader;
+  if (!loader.load(mLevelMesh, "/home/alex/Documents/git/awEngine/examples/basic/assets/torus.obj"))
+    LOG_APP(aw::log::Level::Error, "Could not load level mesh...\n");
 }
 
 void BasicState::onShow()

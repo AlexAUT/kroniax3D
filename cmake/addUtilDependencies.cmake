@@ -1,8 +1,10 @@
 # glm
 if(AW_OS_EMSCRIPTEN OR AW_OS_ANDROID)
   set(glm_DIR ${CMAKE_PREFIX_PATH}/lib/cmake/glm)
+else()
+  set(glm_DIR ${CMAKE_PREFIX_PATH}/lib64/cmake/glm)
 endif()
-find_package(glm "0.9.9" EXACT REQUIRED PATH_SUFFIXES "${CMAKE_PREFIX_PATH}")
+find_package(glm "0.9.9" EXACT REQUIRED PATH_SUFFIXES "${CMAKE_PREFIX_PATH}/lib64/cmake/glm")
 
 # FMT
 if(AW_OS_EMSCRIPTEN)

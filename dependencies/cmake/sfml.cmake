@@ -1,8 +1,8 @@
 ExternalProject_Add(SFML_Debug_Shared
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/sfml
-  DOWNLOAD_COMMAND ""
-  #GIT_REPOSITORY "https://github.com/alexaut/sfml"
-  #GIT_TAG "4043f71156a7149f8d4bafe15d3ac73c440fae7b"
+  #DOWNLOAD_COMMAND ""
+  GIT_REPOSITORY "https://github.com/alexaut/sfml"
+  GIT_TAG "91089ad24cca0198b108b472c305a2947d58ecab"
   UPDATE_COMMAND ""
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug
              -DBUILD_SHARED_LIBS=ON

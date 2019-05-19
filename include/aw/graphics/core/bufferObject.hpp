@@ -18,13 +18,13 @@ public:
   BufferObject(const BufferObject&) = delete;
   BufferObject operator=(const BufferObject&) = delete;
 
-  void setData(const void* data, size_t size);
   template <typename Container>
   void setData(const Container& container);
+  void setData(const void* data, size_t size);
 
-  void setSubData(const void* data, size_t size, ptrdiff offset);
   template <typename Container>
   void setSubData(const Container& container, ptrdiff offset);
+  void setSubData(const void* data, size_t size, ptrdiff offset);
 
   void bind() const;
   void unbind() const;
@@ -44,14 +44,14 @@ namespace aw::gpu
 template <typename Container>
 inline void BufferObject::setData(const Container& container)
 {
-  constexpr auto elementSize = sizeof(Container::value_type);
-  setData(container.data(), container.size() * elementSize);
+  constexpr auto elementSize = sizeof(typename Container::value_type);
+  setData(container.data(), elementSize * container.size());
 }
 
 template <typename Container>
 inline void BufferObject::setSubData(const Container& container, ptrdiff offset)
 {
-  constexpr auto elementSize = sizeof(Container::value_type);
-  setData(container.data(), container.size() * elementSize, offset);
+  constexpr auto elementSize = sizeof(typename Container::value_type);
+  setSubData(container.data(), elementSize * container.size(), offset);
 }
 } // namespace aw::gpu

@@ -65,7 +65,7 @@ GLenum toGL(BindType type)
   case BindType::UniformBuffer:
     return GL_UNIFORM_BUFFER;
   default:
-    assert("Unsupported BindType");
+    assert(false && "Unsupported BindType");
     return 0;
   }
 }
@@ -92,6 +92,9 @@ GLbitfield toGL(UsageType type)
     return GL_DYNAMIC_READ;
   case UsageType::DynamicCopy:
     return GL_DYNAMIC_COPY;
+  default:
+    assert(false && "Unsupported UsageType");
+    return 0;
   }
 }
 

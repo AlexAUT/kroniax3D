@@ -26,6 +26,11 @@ void StaticMesh::setUVChannel(size_t index, UVChannel channel)
   mUVChannels[index] = std::move(channel);
 }
 
+void StaticMesh::setIndices(Indices indices)
+{
+  mIndices = std::move(indices);
+}
+
 size_t StaticMesh::numUVChannels() const
 {
   return mUVChannels.size();
@@ -90,7 +95,7 @@ void StaticMesh::update()
     mVAO.addVertexAttribute(&mVBO,
                             {6, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const void*>(offset)});
   }
-  assert(offset == size);
+  assert(static_cast<size_t>(offset) == size);
 
   if (!mIndices.empty())
   {
