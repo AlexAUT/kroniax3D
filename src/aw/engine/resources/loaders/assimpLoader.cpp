@@ -48,7 +48,6 @@ bool AssimpLoader::load(StaticMesh& mesh, const char* path)
 
   // Extension is last element, so we can directly supply the stringview
   auto extensionV = filePath::extension(file.getPath());
-  LOG_D("Extension: {}\n", extensionV);
 
   auto fileContent = aw::file::toUint8(file);
   importer.ReadFileFromMemory(fileContent.data(), fileContent.size(),
@@ -86,7 +85,8 @@ bool AssimpLoader::parseMesh(const aiScene* scene, unsigned meshIndex)
 
   for (auto i = 0U; i < mesh->mNumVertices; i++)
   {
-    positions.push_back(Vec3{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z});
+    positions.push_back(Vec3{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z} *
+                        0.5f);
     normals.push_back(Vec3{mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z});
   }
 

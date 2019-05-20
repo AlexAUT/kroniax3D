@@ -1,6 +1,6 @@
 #include <aw/engine/window/window.hpp>
 
-#include <aw/engine/logEngine.hpp>
+#include <aw/engine/log.hpp>
 #include <aw/engine/window/event.hpp>
 
 #include <SFML/Window/Event.hpp>
@@ -42,7 +42,7 @@ void Window::handleEvents()
     case sf::Event::LostFocus:
       mMessageBus.channel<windowEvent::LostFocus>().broadcast({});
     default:
-      LOG_ENGINE(log::Level::Warning, "Event translation not implemented {}\n", event.type);
+      LOG_ENGINE_W("Event translation not implemented {}\n", event.type);
     }
   }
 }

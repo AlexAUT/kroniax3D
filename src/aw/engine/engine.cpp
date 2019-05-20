@@ -1,7 +1,7 @@
 #include <aw/engine/engine.hpp>
 
 #include <aw/config.hpp>
-#include <aw/engine/logEngine.hpp>
+#include <aw/engine/log.hpp>
 #include <aw/opengl/opengl.hpp>
 #include <aw/util/log/log.hpp>
 

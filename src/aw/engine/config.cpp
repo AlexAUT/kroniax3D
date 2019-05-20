@@ -1,6 +1,6 @@
 #include <aw/engine/config.hpp>
 
-#include <aw/engine/logEngine.hpp>
+#include <aw/engine/log.hpp>
 #include <aw/util/file/inputStream.hpp>
 #include <aw/util/file/outputStream.hpp>
 #include <aw/util/file/pathRegistry.hpp>
@@ -17,8 +17,7 @@ Config Config::load()
   aw::file::InputStream file(path);
   if (!file.isOpen())
   {
-    LOG_ENGINE(aw::log::Level::Warning,
-               "Could not find engine config at {}, using default config\n", path);
+    LOG_ENGINE_W("Could not find engine config at {}, using default config\n", path);
     return config;
   }
 

@@ -1,4 +1,6 @@
 add_to_target(awGraphics PUBLIC bufferObject.hpp)
+add_to_target(awGraphics PUBLIC shaderProgram.hpp)
+add_to_target(awGraphics PUBLIC shaderStage.hpp)
 add_to_target(awGraphics PUBLIC vertex.hpp)
 add_to_target(awGraphics PUBLIC vertexArrayObject.hpp)
 add_to_target(awGraphics PUBLIC vertexAttribute.hpp)

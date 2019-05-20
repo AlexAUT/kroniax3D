@@ -47,7 +47,10 @@ void Logger::sinkThread()
       for (auto& sink : mSinks)
         sink->log(mMessageBuffer[loc]);
 
+      // clear will not alter the content just set size, so we need to memset to 0
+      memset(mMessageBuffer[loc].message.data(), 0, mMessageBuffer[loc].message.size());
       mMessageBuffer[loc].message.clear();
+      std::atomic_thread_fence(std::memory_order_seq_cst);
       mBufferController.increaseReader();
     }
     std::this_thread::sleep_for(mFlushInterval);

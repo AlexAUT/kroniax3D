@@ -34,9 +34,9 @@ void VertexArrayObject::addVertexAttribute(const BufferObject* vbo, VertexAttrib
   if (vbo)
     vbo->bind();
 
-  glEnableVertexAttribArray(attribute.index);
-  glVertexAttribPointer(attribute.index, attribute.size, attribute.type, attribute.normalized,
-                        attribute.stride, attribute.offset);
+  GL_CHECK(glEnableVertexAttribArray(attribute.index));
+  GL_CHECK(glVertexAttribPointer(attribute.index, attribute.size, attribute.type,
+                                 attribute.normalized, attribute.stride, attribute.offset));
 }
 
 } // namespace aw::gpu

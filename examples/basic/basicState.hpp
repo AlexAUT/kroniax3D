@@ -3,6 +3,7 @@
 #include <aw/engine/stateMachine/state.hpp>
 #include <aw/engine/window/event.hpp>
 #include <aw/engine/window/eventSubscriber.hpp>
+#include <aw/graphics/core/shaderProgram.hpp>
 
 #include <aw/engine/resources/staticMesh.hpp>
 
@@ -28,4 +29,6 @@ private:
   aw::engine::Engine& mEngine;
 
   aw::engine::StaticMesh mLevelMesh;
+
+  aw::gpu::ShaderProgram mBasicShader;
 };

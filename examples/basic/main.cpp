@@ -2,9 +2,10 @@
 #include <thread>
 
 #include <aw/engine/engine.hpp>
-#include <aw/engine/logEngine.hpp>
+#include <aw/engine/log.hpp>
 #include <aw/engine/window/event.hpp>
 #include <aw/util/log/consoleSink.hpp>
+#include <aw/util/log/fileSink.hpp>
 #include <aw/util/log/log.hpp>
 #include <aw/util/log/logger.hpp>
 
@@ -28,7 +29,7 @@ int main()
 
   int returnValue = engine.run();
 
-  LOG_ENGINE(aw::log::Level::Debug, "Closing application!");
+  LOG_ENGINE_D("Closing application!");
 
   return returnValue;
 }

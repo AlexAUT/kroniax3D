@@ -46,10 +46,15 @@ auto StaticMesh::normals() const -> const Normals&
   return mNormals;
 }
 
-auto StaticMesh::uvChannel(size_t index) -> const UVChannel&
+auto StaticMesh::uvChannel(size_t index) const -> const UVChannel&
 {
-  assert(numUVChannels() > index);
+  assert(index < numUVChannels());
   return mUVChannels[index];
+}
+
+auto StaticMesh::indices() const -> const Indices&
+{
+  return mIndices;
 }
 
 void StaticMesh::update()
@@ -76,24 +81,24 @@ void StaticMesh::update()
   if (hasPositions)
   {
     mVBO.setSubData(mPositions, offset);
-    offset += mPositions.size() * sizeof(Positions::value_type);
     mVAO.addVertexAttribute(&mVBO,
-                            {1, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const void*>(offset)});
+                            {1, 3, GL_FLOAT, GL_TRUE, 0, reinterpret_cast<const void*>(offset)});
+    offset += mPositions.size() * sizeof(Positions::value_type);
   }
   if (hasNormals)
   {
     mVBO.setSubData(mNormals, offset);
-    offset += mNormals.size() * sizeof(Positions::value_type);
     mVAO.addVertexAttribute(&mVBO,
                             {2, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const void*>(offset)});
+    offset += mNormals.size() * sizeof(Positions::value_type);
   }
 
   for (auto& channel : mUVChannels)
   {
     mVBO.setSubData(channel, offset);
-    offset += channel.size() * sizeof(UVChannel::value_type);
     mVAO.addVertexAttribute(&mVBO,
                             {6, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const void*>(offset)});
+    offset += channel.size() * sizeof(UVChannel::value_type);
   }
   assert(static_cast<size_t>(offset) == size);
 
@@ -108,5 +113,10 @@ void StaticMesh::update()
   mVBO.unbind();
   if (!mIndices.empty())
     mIBO.unbind();
+}
+
+void StaticMesh::bind()
+{
+  mVAO.bind();
 }
 } // namespace aw::engine

@@ -29,10 +29,13 @@ public:
 
   const Positions& positions() const;
   const Normals& normals() const;
-  const UVChannel& uvChannel(size_t index);
+  const UVChannel& uvChannel(size_t index) const;
+  const Indices& indices() const;
 
   // This function will generate the GPU buffers
   void update();
+
+  void bind();
 
 private:
 private:
