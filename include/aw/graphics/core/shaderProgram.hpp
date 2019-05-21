@@ -1,8 +1,10 @@
 #pragma once
 
 #include <aw/opengl/types.hpp>
+#include <aw/util/math/matrix.hpp>
+#include <aw/util/math/vector.hpp>
 
-namespace aw::gpu
+namespace aw::graphics
 {
 class ShaderStage;
 
@@ -20,6 +22,11 @@ public:
 
   void bind();
   void unbind();
+
+  GLint getUniformLocation(const char* name);
+
+  void set(const char* name, const math::Mat4& mat);
+  void set(GLint location, const math::Mat4& mat);
 
 private:
   void attach(const ShaderStage& shaderStage);
@@ -39,4 +46,4 @@ bool ShaderProgram::link(ShaderStages&&... shaderStages)
   (detach(shaderStages), ...);
 }
 
-} // namespace aw::gpu
+} // namespace aw::graphics

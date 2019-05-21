@@ -7,7 +7,7 @@
 
 #include <cassert>
 
-namespace aw::gpu
+namespace aw::graphics
 {
 GLenum typeToGL(ShaderStage::Type type);
 
@@ -76,4 +76,4 @@ GLenum typeToGL(ShaderStage::Type type)
     return GL_NONE;
   }
 }
-} // namespace aw::gpu
+} // namespace aw::graphics

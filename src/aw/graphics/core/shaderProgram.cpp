@@ -3,8 +3,9 @@
 #include <aw/graphics/core/shaderStage.hpp>
 #include <aw/graphics/log.hpp>
 #include <aw/opengl/opengl.hpp>
+#include <aw/util/math/matrix.hpp>
 
-namespace aw::gpu
+namespace aw::graphics
 {
 ShaderProgram::ShaderProgram() : mId(GL_CHECK(glCreateProgram())) {}
 
@@ -47,4 +48,21 @@ void ShaderProgram::detach(const ShaderStage& shaderStage)
   GL_CHECK(glDetachShader(mId, shaderStage.id()));
 }
 
-} // namespace aw::gpu
+GLint ShaderProgram::getUniformLocation(const char* name)
+{
+  GLint loc;
+  GL_CHECK(loc = glGetUniformLocation(mId, name));
+  return loc;
+}
+
+void ShaderProgram::set(const char* name, const math::Mat4& mat)
+{
+  set(getUniformLocation(name), mat);
+}
+
+void ShaderProgram::set(GLint location, const math::Mat4& mat)
+{
+  GL_CHECK(glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]));
+}
+
+} // namespace aw::graphics

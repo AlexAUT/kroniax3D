@@ -4,7 +4,7 @@
 
 #include <string_view>
 
-namespace aw::gpu
+namespace aw::graphics
 {
 class ShaderStage
 {
@@ -31,4 +31,4 @@ private:
   Type mType;
   GLuint mId;
 };
-} // namespace aw::gpu
+} // namespace aw::graphics

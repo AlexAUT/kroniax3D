@@ -4,7 +4,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-namespace aw
+namespace aw::math
 {
 
 using Vec2 = glm::vec2;
@@ -25,5 +25,5 @@ using Vec4i = glm::ivec4;
 using Vec4u = glm::uvec4;
 using Vec4d = glm::dvec4;
 
-} // namespace aw
+} // namespace aw::math
 

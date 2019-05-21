@@ -4,7 +4,7 @@
 
 #include <cassert>
 
-namespace aw::gpu
+namespace aw::graphics
 {
 GLenum toGL(BindType type);
 GLbitfield toGL(UsageType type);
@@ -98,4 +98,4 @@ GLbitfield toGL(UsageType type)
   }
 }
 
-} // namespace aw::gpu
+} // namespace aw::graphics

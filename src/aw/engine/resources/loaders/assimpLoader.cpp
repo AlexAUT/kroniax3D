@@ -77,17 +77,17 @@ bool AssimpLoader::parseMesh(const aiScene* scene, unsigned meshIndex)
   assert(mesh->HasNormals());
   assert(mesh->HasFaces());
 
-  std::vector<Vec3> positions;
+  std::vector<math::Vec3> positions;
   positions.reserve(mesh->mNumVertices);
 
-  std::vector<Vec3> normals;
+  std::vector<math::Vec3> normals;
   normals.reserve(mesh->mNumVertices);
 
   for (auto i = 0U; i < mesh->mNumVertices; i++)
   {
-    positions.push_back(Vec3{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z} *
-                        0.5f);
-    normals.push_back(Vec3{mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z});
+    positions.push_back(
+        math::Vec3{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z} * 0.5f);
+    normals.push_back(math::Vec3{mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z});
   }
 
   mStaticMesh->setPositions(std::move(positions));

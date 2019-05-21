@@ -7,7 +7,7 @@
 
 #include <cassert>
 
-namespace aw::gpu
+namespace aw::graphics
 {
 VertexArrayObject::VertexArrayObject()
 {
@@ -39,4 +39,4 @@ void VertexArrayObject::addVertexAttribute(const BufferObject* vbo, VertexAttrib
                                  attribute.normalized, attribute.stride, attribute.offset));
 }
 
-} // namespace aw::gpu
+} // namespace aw::graphics

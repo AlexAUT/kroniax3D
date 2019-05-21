@@ -16,28 +16,25 @@ BasicState::BasicState(aw::engine::Engine& engine) :
   if (!loader.load(mLevelMesh, "/home/alex/Documents/git/awEngine/examples/basic/assets/torus.obj"))
     LOG_APP_E("Could not load level mesh...\n");
 
-  aw::gpu::ShaderStage vShader(aw::gpu::ShaderStage::Type::Vertex);
+  aw::graphics::ShaderStage vShader(aw::graphics::ShaderStage::Type::Vertex);
   vShader.loadFromPath(
       "/home/alex/Documents/git/awEngine/examples/basic/assets/shaders/simple_vs.glsl");
 
-  aw::gpu::ShaderStage fShader(aw::gpu::ShaderStage::Type::Fragment);
+  aw::graphics::ShaderStage fShader(aw::graphics::ShaderStage::Type::Fragment);
   fShader.loadFromPath(
       "/home/alex/Documents/git/awEngine/examples/basic/assets/shaders/simple_fs.glsl");
 
   mBasicShader.link(vShader, fShader);
 
   glClearColor(0.75, 0.75, 0.75, 1.0);
+
+  mCamera.position({0.f, -1.f, 0.f});
+  mCamera.roatation(aw::math::Quat(aw::math::Vec3(0.f, 1.6f, 0.f)));
 }
 
-void BasicState::onShow()
-{
-  LOG_APP_D("SHOW!\n");
-}
+void BasicState::onShow() {}
 
-void BasicState::update(float dt)
-{
-  // LOG_APP(aw::log::Level::Debug, "Update in basic state! {}\n", dt);
-}
+void BasicState::update(float dt) {}
 
 void BasicState::render()
 {
@@ -46,6 +43,7 @@ void BasicState::render()
 
   mLevelMesh.bind();
   mBasicShader.bind();
+  mBasicShader.set("mvp", mCamera.viewProjection());
   GL_CHECK(glDrawElements(GL_TRIANGLES, mLevelMesh.indices().size(), GL_UNSIGNED_INT, nullptr));
 }
 
@@ -59,4 +57,6 @@ void BasicState::receive(const aw::windowEvent::Resized& event)
 {
   LOG_APP_E("Resize event: {},{}\n", event.width, event.height);
   GL_CHECK(glViewport(0, 0, event.width, event.height));
+
+  mCamera.fieldOfView(static_cast<float>(event.width) / static_cast<float>(event.height));
 }

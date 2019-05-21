@@ -5,7 +5,7 @@
 #include <aw/graphics/core/bindType.hpp>
 #include <aw/graphics/core/usageType.hpp>
 
-namespace aw::gpu
+namespace aw::graphics
 {
 
 class BufferObject
@@ -37,9 +37,9 @@ private:
   GLbitfield mUsage;
 };
 
-} // namespace aw::gpu
+} // namespace aw::graphics
 
-namespace aw::gpu
+namespace aw::graphics
 {
 template <typename Container>
 inline void BufferObject::setData(const Container& container)
@@ -54,4 +54,4 @@ inline void BufferObject::setSubData(const Container& container, ptrdiff offset)
   constexpr auto elementSize = sizeof(typename Container::value_type);
   setSubData(container.data(), elementSize * container.size(), offset);
 }
-} // namespace aw::gpu
+} // namespace aw::graphics

@@ -4,7 +4,7 @@
 #include <aw/graphics/core/vertexLayout.hpp>
 #include <aw/opengl/types.hpp>
 
-namespace aw::gpu
+namespace aw::graphics
 {
 class BufferObject;
 
@@ -37,4 +37,4 @@ void VertexArrayObject::addVertexAttributes(const BufferObject* vbo, const Verte
     addVertexAttribute(vbo, a);
 }
 
-} // namespace aw::gpu
+} // namespace aw::graphics

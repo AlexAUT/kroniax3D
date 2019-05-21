@@ -12,9 +12,9 @@ namespace aw::engine
 class StaticMesh
 {
 public:
-  using Positions = std::vector<aw::Vec3>;
-  using Normals = std::vector<aw::Vec3>;
-  using UVChannel = std::vector<aw::Vec2>;
+  using Positions = std::vector<math::Vec3>;
+  using Normals = std::vector<math::Vec3>;
+  using UVChannel = std::vector<math::Vec2>;
   using Indices = std::vector<uint32>;
 
 public:
@@ -45,8 +45,8 @@ private:
 
   Indices mIndices;
 
-  gpu::VertexArrayObject mVAO;
-  gpu::BufferObject mVBO{gpu::BindType::ArrayBuffer};
-  gpu::BufferObject mIBO{gpu::BindType::ElementArrayBuffer};
+  graphics::VertexArrayObject mVAO;
+  graphics::BufferObject mVBO{graphics::BindType::ArrayBuffer};
+  graphics::BufferObject mIBO{graphics::BindType::ElementArrayBuffer};
 };
 } // namespace aw::engine
