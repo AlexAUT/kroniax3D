@@ -7,7 +7,9 @@ namespace aw::engine
 {
 class WindowEventSubscriber
     : public aw::msg::Subscriber<WindowEventSubscriber, windowEvent::Closed, windowEvent::Resized,
-                                 windowEvent::GainedFocus, windowEvent::LostFocus>
+                                 windowEvent::GainedFocus, windowEvent::LostFocus,
+                                 windowEvent::MouseMoved, windowEvent::MouseButtonPressed,
+                                 windowEvent::MouseButtonReleased>
 {
 public:
   WindowEventSubscriber(aw::msg::Bus& bus) : Subscriber(bus) {}
@@ -16,5 +18,8 @@ public:
   virtual void receive(const windowEvent::Resized& event) {}
   virtual void receive(const windowEvent::GainedFocus& event) {}
   virtual void receive(const windowEvent::LostFocus& event) {}
+  virtual void receive(const windowEvent::MouseMoved& event) {}
+  virtual void receive(const windowEvent::MouseButtonPressed& event) {}
+  virtual void receive(const windowEvent::MouseButtonReleased& event) {}
 };
 } // namespace aw::engine

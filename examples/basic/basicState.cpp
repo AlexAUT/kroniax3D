@@ -5,6 +5,8 @@
 #include <aw/graphics/core/shaderStage.hpp>
 #include <aw/opengl/opengl.hpp>
 
+#include <glm/gtx/string_cast.hpp>
+
 #include "logApp.hpp"
 
 BasicState::BasicState(aw::engine::Engine& engine) :
@@ -13,7 +15,7 @@ BasicState::BasicState(aw::engine::Engine& engine) :
     mEngine(engine)
 {
   aw::engine::AssimpLoader loader;
-  if (!loader.load(mLevelMesh, "/home/alex/Documents/git/awEngine/examples/basic/assets/torus.obj"))
+  if (!loader.load(mLevelMesh, "/home/alex/Documents/git/awEngine/examples/basic/assets/ship.obj"))
     LOG_APP_E("Could not load level mesh...\n");
 
   aw::graphics::ShaderStage vShader(aw::graphics::ShaderStage::Type::Vertex);
@@ -26,15 +28,19 @@ BasicState::BasicState(aw::engine::Engine& engine) :
 
   mBasicShader.link(vShader, fShader);
 
-  glClearColor(0.75, 0.75, 0.75, 1.0);
+  GL_CHECK(glClearColor(0.75, 0.75, 0.75, 1.0));
+  GL_CHECK(glEnable(GL_DEPTH_TEST));
 
-  mCamera.position({0.f, -1.f, 0.f});
-  mCamera.roatation(aw::math::Quat(aw::math::Vec3(0.f, 1.6f, 0.f)));
+  mCamController.distance(4.f);
 }
 
 void BasicState::onShow() {}
 
-void BasicState::update(float dt) {}
+void BasicState::update(float dt)
+{
+  using namespace aw::math;
+  mCamController.apply(mCamera);
+}
 
 void BasicState::render()
 {
@@ -55,8 +61,27 @@ void BasicState::receive(const aw::windowEvent::Closed& event)
 
 void BasicState::receive(const aw::windowEvent::Resized& event)
 {
-  LOG_APP_E("Resize event: {},{}\n", event.width, event.height);
-  GL_CHECK(glViewport(0, 0, event.width, event.height));
+  GL_CHECK(glViewport(0, 0, event.size.x, event.size.y));
+  mCamera.aspectRatio(static_cast<float>(event.size.x) / static_cast<float>(event.size.y));
+}
 
-  mCamera.fieldOfView(static_cast<float>(event.width) / static_cast<float>(event.height));
+void BasicState::receive(const aw::windowEvent::MouseMoved& event)
+{
+  if (mRightPressed)
+  {
+    auto rot = aw::math::Vec2(event.delta.y, -event.delta.x) * 0.01f;
+    mCamController.rotation(mCamController.rotation() + rot);
+  }
+}
+
+void BasicState::receive(const aw::windowEvent::MouseButtonPressed& event)
+{
+  if (event.button == aw::mouse::Button::Right)
+    mRightPressed = true;
+}
+
+void BasicState::receive(const aw::windowEvent::MouseButtonReleased& event)
+{
+  if (event.button == aw::mouse::Button::Right)
+    mRightPressed = false;
 }

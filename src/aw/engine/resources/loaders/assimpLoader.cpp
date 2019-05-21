@@ -86,7 +86,7 @@ bool AssimpLoader::parseMesh(const aiScene* scene, unsigned meshIndex)
   for (auto i = 0U; i < mesh->mNumVertices; i++)
   {
     positions.push_back(
-        math::Vec3{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z} * 0.5f);
+        math::Vec3{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z});
     normals.push_back(math::Vec3{mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z});
   }
 

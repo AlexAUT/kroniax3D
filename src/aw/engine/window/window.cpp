@@ -4,6 +4,7 @@
 #include <aw/engine/window/event.hpp>
 
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/Mouse.hpp>
 
 namespace aw::engine
 {
@@ -34,13 +35,38 @@ void Window::handleEvents()
       mMessageBus.channel<windowEvent::Closed>().broadcast({});
       break;
     case sf::Event::Resized:
-      mMessageBus.channel<windowEvent::Resized>().broadcast({event.size.width, event.size.height});
+      mMessageBus.channel<windowEvent::Resized>().broadcast(
+          {{event.size.width, event.size.height}});
       break;
     case sf::Event::GainedFocus:
       mMessageBus.channel<windowEvent::GainedFocus>().broadcast({});
       break;
     case sf::Event::LostFocus:
       mMessageBus.channel<windowEvent::LostFocus>().broadcast({});
+      break;
+    case sf::Event::MouseMoved:
+    {
+      math::Vec2i mousePos{event.mouseMove.x, event.mouseMove.y};
+      auto delta = mousePos - mLastMousePos;
+      mLastMousePos = mousePos;
+
+      if (!mFirstMouseMoved)
+        mMessageBus.channel<windowEvent::MouseMoved>().broadcast({mousePos, delta});
+      else
+        mFirstMouseMoved = false;
+
+      break;
+    }
+    case sf::Event::MouseButtonPressed:
+      mMessageBus.channel<windowEvent::MouseButtonPressed>().broadcast(
+          {static_cast<mouse::Button>(event.mouseButton.button),
+           {event.mouseButton.x, event.mouseButton.y}});
+      break;
+    case sf::Event::MouseButtonReleased:
+      mMessageBus.channel<windowEvent::MouseButtonReleased>().broadcast(
+          {static_cast<mouse::Button>(event.mouseButton.button),
+           {event.mouseButton.x, event.mouseButton.y}});
+      break;
     default:
       LOG_ENGINE_W("Event translation not implemented {}\n", event.type);
     }

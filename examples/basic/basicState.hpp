@@ -3,6 +3,7 @@
 #include <aw/engine/stateMachine/state.hpp>
 #include <aw/engine/window/event.hpp>
 #include <aw/engine/window/eventSubscriber.hpp>
+#include <aw/graphics/3d/orbitCameraController.hpp>
 #include <aw/graphics/core/camera.hpp>
 #include <aw/graphics/core/shaderProgram.hpp>
 
@@ -25,6 +26,9 @@ public:
 
   void receive(const aw::windowEvent::Closed& event) override;
   void receive(const aw::windowEvent::Resized& event) override;
+  void receive(const aw::windowEvent::MouseMoved& event) override;
+  void receive(const aw::windowEvent::MouseButtonPressed& event) override;
+  void receive(const aw::windowEvent::MouseButtonReleased& event) override;
 
 private:
   aw::engine::Engine& mEngine;
@@ -33,4 +37,7 @@ private:
 
   aw::graphics::ShaderProgram mBasicShader;
   aw::graphics::Camera mCamera;
+  aw::graphics::OrbitCameraController mCamController;
+
+  bool mRightPressed{false};
 };

@@ -31,7 +31,7 @@ public:
   void position(math::Vec3 position);
   math::Vec3 position() const;
 
-  void roatation(math::Quat rotation);
+  void rotation(math::Quat rotation);
   math::Quat rotation() const;
 
   const math::Mat4& inverseView() const;

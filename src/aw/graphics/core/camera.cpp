@@ -54,7 +54,7 @@ void Camera::fieldOfView(float fov)
   if (mFieldOfView != fov)
   {
     mFieldOfView = fov;
-    mProjectionDirty = fov;
+    mProjectionDirty = true;
   }
 }
 
@@ -105,7 +105,7 @@ math::Vec3 Camera::position() const
   return mPosition;
 }
 
-void Camera::roatation(math::Quat rotation)
+void Camera::rotation(math::Quat rotation)
 {
   if (mRotation != rotation)
   {
@@ -150,9 +150,11 @@ void Camera::updateViewMatrix() const
 {
   mViewDirty = false;
 
-  auto rotationMatrix = glm::mat4_cast(mRotation);
-  mInverseViewMatrix = glm::translate(math::Mat4(1.f), mPosition) * rotationMatrix;
-  mViewMatrix = glm::inverse(mInverseViewMatrix);
+  mInverseViewMatrix = glm::translate(math::Mat4(1.f), mPosition) * glm::mat4_cast(mRotation);
+
+  math::Quat inverseRot = mRotation;
+  inverseRot.w = -inverseRot.w;
+  mViewMatrix = glm::mat4_cast((inverseRot)) * glm::translate(math::Mat4(1.f), -mPosition);
 }
 
 void Camera::updateProjectionMatrix() const
