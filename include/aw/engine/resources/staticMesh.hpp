@@ -16,6 +16,7 @@ public:
   using Normals = std::vector<math::Vec3>;
   using UVChannel = std::vector<math::Vec2>;
   using Indices = std::vector<uint32>;
+  using SubMeshOffsets = std::vector<uint32>;
 
 public:
   // Those are on purpose by value, because normally you will only set them once
@@ -23,14 +24,16 @@ public:
   void setNormals(Normals normals);
   size_t addUVChannel(UVChannel channel);
   void setUVChannel(size_t index, UVChannel);
-  void setIndices(Indices indices);
+  void setIndices(Indices indices, SubMeshOffsets subMeshOffsets);
 
   size_t numUVChannels() const;
+  size_t subMeshCount() const;
 
   const Positions& positions() const;
   const Normals& normals() const;
   const UVChannel& uvChannel(size_t index) const;
   const Indices& indices() const;
+  const SubMeshOffsets& subMeshOffsets() const;
 
   // This function will generate the GPU buffers
   void update();
@@ -44,6 +47,7 @@ private:
   std::vector<UVChannel> mUVChannels;
 
   Indices mIndices;
+  SubMeshOffsets mSubMeshOffsets;
 
   graphics::VertexArrayObject mVAO;
   graphics::BufferObject mVBO{graphics::BindType::ArrayBuffer};

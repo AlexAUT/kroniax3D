@@ -26,9 +26,10 @@ void StaticMesh::setUVChannel(size_t index, UVChannel channel)
   mUVChannels[index] = std::move(channel);
 }
 
-void StaticMesh::setIndices(Indices indices)
+void StaticMesh::setIndices(Indices indices, SubMeshOffsets subMeshOffsets)
 {
   mIndices = std::move(indices);
+  mSubMeshOffsets = std::move(subMeshOffsets);
 }
 
 size_t StaticMesh::numUVChannels() const

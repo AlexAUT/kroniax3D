@@ -85,3 +85,12 @@ void BasicState::receive(const aw::windowEvent::MouseButtonReleased& event)
   if (event.button == aw::mouse::Button::Right)
     mRightPressed = false;
 }
+
+void BasicState::receive(const aw::windowEvent::MouseWheelScrolled& event)
+{
+  LOG_APP_D("Scroll: {} {}", event.delta, static_cast<int>(event.wheel));
+  if (event.wheel == aw::mouse::Wheel::Veritcal)
+  {
+    mCamController.distance(mCamController.distance() + event.delta);
+  }
+}

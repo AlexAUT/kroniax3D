@@ -29,6 +29,7 @@ public:
   void receive(const aw::windowEvent::MouseMoved& event) override;
   void receive(const aw::windowEvent::MouseButtonPressed& event) override;
   void receive(const aw::windowEvent::MouseButtonReleased& event) override;
+  void receive(const aw::windowEvent::MouseWheelScrolled& event) override;
 
 private:
   aw::engine::Engine& mEngine;

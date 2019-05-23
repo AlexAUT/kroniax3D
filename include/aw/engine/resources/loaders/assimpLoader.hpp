@@ -1,5 +1,7 @@
 #pragma once
 
+#include <aw/engine/resources/staticMesh.hpp>
+
 #include <vector>
 
 class aiScene;
@@ -38,5 +40,12 @@ private:
   Config mConfig{};
 
   StaticMesh* mStaticMesh{nullptr};
+
+  StaticMesh::Positions mPositions;
+  StaticMesh::Normals mNormals;
+  std::vector<StaticMesh::UVChannel> mUVChannels;
+
+  StaticMesh::SubMeshOffsets mSubMeshOffsets;
+  StaticMesh::Indices mIndices;
 };
 } // namespace aw::engine

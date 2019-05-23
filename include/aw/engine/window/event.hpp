@@ -39,4 +39,11 @@ struct MouseButtonReleased
   mouse::Button button;
   math::Vec2i pos;
 };
+
+struct MouseWheelScrolled
+{
+  mouse::Wheel wheel;
+  math::Vec2i pos;
+  float delta;
+};
 } // namespace aw::windowEvent

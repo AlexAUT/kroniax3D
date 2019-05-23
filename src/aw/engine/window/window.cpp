@@ -67,6 +67,14 @@ void Window::handleEvents()
           {static_cast<mouse::Button>(event.mouseButton.button),
            {event.mouseButton.x, event.mouseButton.y}});
       break;
+    case sf::Event::MouseWheelScrolled:
+      mMessageBus.channel<windowEvent::MouseWheelScrolled>().broadcast(
+          {static_cast<mouse::Wheel>(event.mouseWheelScroll.wheel),
+           {event.mouseWheelScroll.x, event.mouseWheelScroll.y},
+           event.mouseWheelScroll.delta});
+      break;
+    case sf::Event::MouseWheelMoved:
+      break; // Deprecated
     default:
       LOG_ENGINE_W("Event translation not implemented {}\n", event.type);
     }

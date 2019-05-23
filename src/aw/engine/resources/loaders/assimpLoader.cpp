@@ -34,6 +34,11 @@ AssimpLoader::AssimpLoader(Config config) : mConfig(config) {}
 
 bool AssimpLoader::load(StaticMesh& mesh, const char* path)
 {
+  mPositions.clear();
+  mNormals.clear();
+  mUVChannels.clear();
+  mIndices.clear();
+
   mStaticMesh = &mesh;
 
   aw::file::InputStream file(path);
@@ -59,10 +64,16 @@ bool AssimpLoader::load(StaticMesh& mesh, const char* path)
 
   for (auto i = 0U; i < scene->mNumMeshes; i++)
   {
-    assert(i < 1 && "Importing file with multiple objects not supported yet");
     if (!parseMesh(scene, i))
       return false;
   }
+
+  LOG_D("Positions: {}", mPositions.size());
+  mStaticMesh->setPositions(std::move(mPositions));
+  mStaticMesh->setNormals(std::move(mNormals));
+  mStaticMesh->setIndices(std::move(mIndices), std::move(mSubMeshOffsets));
+
+  LOG_D("Positions: {}", mPositions.size());
 
   mStaticMesh->update();
   return true;
@@ -77,33 +88,32 @@ bool AssimpLoader::parseMesh(const aiScene* scene, unsigned meshIndex)
   assert(mesh->HasNormals());
   assert(mesh->HasFaces());
 
-  std::vector<math::Vec3> positions;
-  positions.reserve(mesh->mNumVertices);
-
-  std::vector<math::Vec3> normals;
-  normals.reserve(mesh->mNumVertices);
+  const auto vertexOffset = mPositions.size();
+  LOG_D("Vertex offset: {}", vertexOffset);
+  // TODO we can first iterate over meshes and do one reserve, to avoid potential very large
+  // reallocs
+  mPositions.reserve(vertexOffset + mesh->mNumVertices);
+  mNormals.reserve(vertexOffset + mesh->mNumVertices);
 
   for (auto i = 0U; i < mesh->mNumVertices; i++)
   {
-    positions.push_back(
+    mPositions.push_back(
         math::Vec3{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z});
-    normals.push_back(math::Vec3{mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z});
+    mPositions.push_back(math::Vec3{mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z});
   }
 
-  mStaticMesh->setPositions(std::move(positions));
-  mStaticMesh->setNormals(std::move(normals));
+  mSubMeshOffsets.push_back(mIndices.size());
+  // mIndices.reserve(mIndices.size() + (3 * mesh->mNumFaces));
 
-  std::vector<unsigned> indices;
   for (auto i = 0U; i < mesh->mNumFaces; i++)
   {
     const auto& face = mesh->mFaces[i];
     assert(face.mNumIndices == 3);
-    indices.emplace_back(face.mIndices[0]);
-    indices.emplace_back(face.mIndices[1]);
-    indices.emplace_back(face.mIndices[2]);
+    mIndices.emplace_back(face.mIndices[0]);
+    mIndices.emplace_back(face.mIndices[1]);
+    mIndices.emplace_back(face.mIndices[2]);
+    LOG_D("Face: {} {} {}", mIndices[3 * i], mIndices[1 + 3 * i], mIndices[2 + 3 * i]);
   }
-
-  mStaticMesh->setIndices(std::move(indices));
 
   return true;
 }

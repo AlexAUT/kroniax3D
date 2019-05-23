@@ -45,8 +45,6 @@ void OrbitCameraController::apply(Camera& camera)
   math::Vec3 offsetDir{sin(mRotation.y) * cos(mRotation.x), sin(mRotation.x),
                        cos(mRotation.y) * cos(mRotation.x)};
   auto position = mLookAt + offsetDir * mDistance;
-  LOG_GRAPHICS_W("POS: {} {} {}", position.x, position.y, position.z);
-  LOG_GRAPHICS_D("Angle: {} {}", mRotation.x * math::to_deg(), mRotation.y * math::to_deg());
 
   math::Vec3 rotation{-mRotation.x, mRotation.y, 0.f};
 
