@@ -15,6 +15,7 @@ Window::Window(const Config& config, const msg::Bus& bus) :
             sf::ContextSettings{
                 config.window.depthBits,
                 config.window.stencilBits,
+                config.window.antialiasingLevel,
             })
 {
   mWindow.setVerticalSyncEnabled(config.window.vsync);

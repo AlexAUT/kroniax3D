@@ -56,7 +56,7 @@ private:
   float mFar{1000.f};
 
   math::Vec3 mPosition{0.f};
-  math::Quat mRotation{0.f, 0.f, 0.f, 1.f};
+  math::Quat mRotation{glm::identity<math::Quat>()};
 
   mutable bool mViewDirty{true};
   mutable bool mProjectionDirty{true};

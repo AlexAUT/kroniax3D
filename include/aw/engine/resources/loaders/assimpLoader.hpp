@@ -5,6 +5,7 @@
 #include <vector>
 
 class aiScene;
+class aiMaterial;
 
 namespace aw::engine
 {
@@ -36,16 +37,20 @@ public:
 private:
   bool parseMesh(const aiScene* scene, unsigned meshIndex);
 
+  bool parseMaterial(const aiScene* scene, unsigned matIndex, const char* path);
+
 private:
   Config mConfig{};
 
   StaticMesh* mStaticMesh{nullptr};
 
+  StaticMesh::Materials mMaterials;
+
   StaticMesh::Positions mPositions;
   StaticMesh::Normals mNormals;
   std::vector<StaticMesh::UVChannel> mUVChannels;
 
-  StaticMesh::SubMeshOffsets mSubMeshOffsets;
   StaticMesh::Indices mIndices;
+  StaticMesh::SubMeshes mSubMeshes;
 };
 } // namespace aw::engine

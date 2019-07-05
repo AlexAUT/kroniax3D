@@ -9,6 +9,10 @@
 
 #include <aw/engine/resources/staticMesh.hpp>
 
+#include "src/game/physicsController.hpp"
+#include "src/game/ship.hpp"
+#include "src/game/shipController.hpp"
+
 namespace aw::engine
 {
 class Engine;
@@ -34,11 +38,16 @@ public:
 private:
   aw::engine::Engine& mEngine;
 
+  aw::engine::StaticMesh mShipMesh;
   aw::engine::StaticMesh mLevelMesh;
 
   aw::graphics::ShaderProgram mBasicShader;
   aw::graphics::Camera mCamera;
   aw::graphics::OrbitCameraController mCamController;
+
+  Ship mShip;
+  PhysicsController mPhysicsController;
+  ShipController mShipController;
 
   bool mRightPressed{false};
 };

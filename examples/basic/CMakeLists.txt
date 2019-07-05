@@ -7,6 +7,9 @@ set(CMAKE_CXX_STANDARD 17)
 project(awExampleBasic)
 add_executable(${PROJECT_NAME} main.cpp basicState.cpp)
 
+add_subdirectory(src/game)
+
+
 set(AW_ENGINE_DIR ../../ CACHE STRING "Path to the awEngine git repository")
 
 #set(AW_TESTS OFF CACHE BOOL "Disable tests" FORCE)

@@ -4,12 +4,12 @@
 
 namespace aw::engine
 {
-void StaticMesh::setPositions(Positions positions)
+void StaticMesh::positions(Positions positions)
 {
   mPositions = std::move(positions);
 }
 
-void StaticMesh::setNormals(Normals normals)
+void StaticMesh::normals(Normals normals)
 {
   mNormals = std::move(normals);
 }
@@ -20,16 +20,30 @@ size_t StaticMesh::addUVChannel(UVChannel channel)
   return mUVChannels.size() - 1;
 }
 
-void StaticMesh::setUVChannel(size_t index, UVChannel channel)
+void StaticMesh::uvChannel(size_t index, UVChannel channel)
 {
   assert(numUVChannels() > index);
   mUVChannels[index] = std::move(channel);
 }
 
-void StaticMesh::setIndices(Indices indices, SubMeshOffsets subMeshOffsets)
+void StaticMesh::uvChannels(std::vector<UVChannel> channels)
+{
+  mUVChannels = std::move(channels);
+}
+
+void StaticMesh::indices(Indices indices)
 {
   mIndices = std::move(indices);
-  mSubMeshOffsets = std::move(subMeshOffsets);
+}
+
+void StaticMesh::materials(Materials materials)
+{
+  mMaterials = std::move(materials);
+}
+
+void StaticMesh::subMeshes(SubMeshes subMeshes)
+{
+  mSubMeshes = std::move(subMeshes);
 }
 
 size_t StaticMesh::numUVChannels() const
@@ -53,9 +67,29 @@ auto StaticMesh::uvChannel(size_t index) const -> const UVChannel&
   return mUVChannels[index];
 }
 
+auto StaticMesh::materials() const -> const Materials&
+{
+  return mMaterials;
+}
+
+auto StaticMesh::subMeshes() const -> const SubMeshes&
+{
+  return mSubMeshes;
+}
+
 auto StaticMesh::indices() const -> const Indices&
 {
   return mIndices;
+}
+
+graphics::Transform& StaticMesh::transform()
+{
+  return mTransform;
+}
+
+const graphics::Transform& StaticMesh::transform() const
+{
+  return mTransform;
 }
 
 void StaticMesh::update()
@@ -83,22 +117,24 @@ void StaticMesh::update()
   {
     mVBO.setSubData(mPositions, offset);
     mVAO.addVertexAttribute(&mVBO,
-                            {1, 3, GL_FLOAT, GL_TRUE, 0, reinterpret_cast<const void*>(offset)});
+                            {0, 3, GL_FLOAT, GL_TRUE, 0, reinterpret_cast<const void*>(offset)});
     offset += mPositions.size() * sizeof(Positions::value_type);
   }
   if (hasNormals)
   {
     mVBO.setSubData(mNormals, offset);
     mVAO.addVertexAttribute(&mVBO,
-                            {2, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const void*>(offset)});
+                            {1, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const void*>(offset)});
     offset += mNormals.size() * sizeof(Positions::value_type);
   }
 
-  for (auto& channel : mUVChannels)
+  for (auto i = 0U; i < mUVChannels.size(); i++)
   {
+    const auto& channel = mUVChannels[i];
+
     mVBO.setSubData(channel, offset);
-    mVAO.addVertexAttribute(&mVBO,
-                            {6, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const void*>(offset)});
+    mVAO.addVertexAttribute(
+        &mVBO, {6 + i, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<const void*>(offset)});
     offset += channel.size() * sizeof(UVChannel::value_type);
   }
   assert(static_cast<size_t>(offset) == size);

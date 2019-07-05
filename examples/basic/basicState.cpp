@@ -4,6 +4,7 @@
 #include <aw/engine/resources/loaders/assimpLoader.hpp>
 #include <aw/graphics/core/shaderStage.hpp>
 #include <aw/opengl/opengl.hpp>
+#include <aw/util/colors.hpp>
 
 #include <glm/gtx/string_cast.hpp>
 
@@ -15,8 +16,19 @@ BasicState::BasicState(aw::engine::Engine& engine) :
     mEngine(engine)
 {
   aw::engine::AssimpLoader loader;
-  if (!loader.load(mLevelMesh, "/home/alex/Documents/git/awEngine/examples/basic/assets/ship.obj"))
-    LOG_APP_E("Could not load level mesh...\n");
+  if (!loader.load(mShipMesh,
+                   "/home/alex/Documents/git/awEngine/examples/basic/assets/meshes/ship.fbx"))
+  {
+    LOG_APP_E("Could not the ship mesh");
+  }
+  using namespace aw::math;
+  mShipMesh.transform().scale(Vec3{0.15});
+
+  if (!loader.load(mLevelMesh,
+                   "/home/alex/Documents/git/awEngine/examples/basic/assets/levels/level1.fbx"))
+  {
+    LOG_APP_E("Could not load the level mesh!");
+  }
 
   aw::graphics::ShaderStage vShader(aw::graphics::ShaderStage::Type::Vertex);
   vShader.loadFromPath(
@@ -32,13 +44,22 @@ BasicState::BasicState(aw::engine::Engine& engine) :
   GL_CHECK(glEnable(GL_DEPTH_TEST));
 
   mCamController.distance(4.f);
+
+  mShip.transform().position(aw::math::Vec3{0.f, 0.25f, 0.f});
+  mShip.velocityDir(aw::math::Vec3{0.f, 0.f, -1.f});
+  mShip.velocity(1.f);
 }
 
 void BasicState::onShow() {}
 
 void BasicState::update(float dt)
 {
-  using namespace aw::math;
+  mPhysicsController.update(dt, mShip);
+  mShipController.update(dt, mShip);
+
+  mShip.update(dt);
+
+  mCamController.lookAt(mShip.transform().position());
   mCamController.apply(mCamera);
 }
 
@@ -47,15 +68,40 @@ void BasicState::render()
   // LOG_APP(aw::log::Level::Warning, "Render nothing :/ \n");
   GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
+  mShipMesh.bind();
+  mBasicShader.bind();
+  mBasicShader.set("mvp", mCamera.viewProjection() * mShip.transform().toMatrix() *
+                              mShipMesh.transform().toMatrix());
+  mBasicShader.set("view", mCamera.view());
+  mBasicShader.set("color", aw::Colors::BLANCHEDALMOND);
+
+  for (auto i = 0U; i < mShipMesh.subMeshes().size(); i++)
+  {
+    const auto& subMesh = mShipMesh.subMeshes()[i];
+
+    GL_CHECK(glDrawElements(GL_TRIANGLES, subMesh.indicesCount, GL_UNSIGNED_INT,
+                            reinterpret_cast<const void*>(subMesh.indicesOffset)));
+  }
+
   mLevelMesh.bind();
   mBasicShader.bind();
-  mBasicShader.set("mvp", mCamera.viewProjection());
-  GL_CHECK(glDrawElements(GL_TRIANGLES, mLevelMesh.indices().size(), GL_UNSIGNED_INT, nullptr));
+  mBasicShader.set("mvp", mCamera.viewProjection() * mLevelMesh.transform().toMatrix());
+  mBasicShader.set("view", mCamera.view());
+  mBasicShader.set("color", aw::Colors::ROYALBLUE);
+
+  auto q = mShipMesh.transform().rotation();
+
+  for (auto i = 0U; i < mLevelMesh.subMeshes().size(); i++)
+  {
+    const auto& subMesh = mLevelMesh.subMeshes()[i];
+
+    GL_CHECK(glDrawElements(GL_TRIANGLES, subMesh.indicesCount, GL_UNSIGNED_INT,
+                            reinterpret_cast<const void*>(subMesh.indicesOffset)));
+  }
 }
 
 void BasicState::receive(const aw::windowEvent::Closed& event)
 {
-  LOG_APP_E("In event receive?");
   mEngine.terminate();
 }
 
@@ -78,17 +124,22 @@ void BasicState::receive(const aw::windowEvent::MouseButtonPressed& event)
 {
   if (event.button == aw::mouse::Button::Right)
     mRightPressed = true;
+
+  if (event.button == aw::mouse::Button::Left)
+    mShipController.steerUp(true);
 }
 
 void BasicState::receive(const aw::windowEvent::MouseButtonReleased& event)
 {
   if (event.button == aw::mouse::Button::Right)
     mRightPressed = false;
+
+  if (event.button == aw::mouse::Button::Left)
+    mShipController.steerUp(false);
 }
 
 void BasicState::receive(const aw::windowEvent::MouseWheelScrolled& event)
 {
-  LOG_APP_D("Scroll: {} {}", event.delta, static_cast<int>(event.wheel));
   if (event.wheel == aw::mouse::Wheel::Veritcal)
   {
     mCamController.distance(mCamController.distance() + event.delta);

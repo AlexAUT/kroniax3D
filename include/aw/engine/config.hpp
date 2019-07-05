@@ -37,6 +37,7 @@ struct Config
 
     unsigned depthBits{8};
     unsigned stencilBits{0};
+    unsigned antialiasingLevel{0};
 
     REFLECT();
   } window;
