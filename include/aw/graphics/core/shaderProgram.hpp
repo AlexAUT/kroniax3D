@@ -5,7 +5,7 @@
 #include <aw/util/math/matrix.hpp>
 #include <aw/util/math/vector.hpp>
 
-namespace aw::graphics
+namespace aw
 {
 class ShaderStage;
 
@@ -26,17 +26,17 @@ public:
 
   GLint getUniformLocation(const char* name) const;
 
-  void set(const char* name, const math::Mat4& mat) const;
-  void set(GLint location, const math::Mat4& mat) const;
+  void set(const char* name, const Mat4& mat) const;
+  void set(GLint location, const Mat4& mat) const;
 
-  void set(const char* name, const math::Vec2& vec) const;
-  void set(GLint location, const math::Vec2& vec) const;
+  void set(const char* name, const Vec2& vec) const;
+  void set(GLint location, const Vec2& vec) const;
 
-  void set(const char* name, const math::Vec3& vec) const;
-  void set(GLint location, const math::Vec3& vec) const;
+  void set(const char* name, const Vec3& vec) const;
+  void set(GLint location, const Vec3& vec) const;
 
-  void set(const char* name, const math::Vec4& vec) const;
-  void set(GLint location, const math::Vec4& vec) const;
+  void set(const char* name, const Vec4& vec) const;
+  void set(GLint location, const Vec4& vec) const;
 
   void set(const char* name, const Color& color) const;
   void set(GLint location, const Color& color) const;
@@ -62,4 +62,4 @@ bool ShaderProgram::link(ShaderStages&&... shaderStages)
   (detach(shaderStages), ...);
 }
 
-} // namespace aw::graphics
+} // namespace aw

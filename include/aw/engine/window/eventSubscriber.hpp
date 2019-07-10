@@ -9,7 +9,8 @@ class WindowEventSubscriber
     : public aw::msg::Subscriber<WindowEventSubscriber, windowEvent::Closed, windowEvent::Resized,
                                  windowEvent::GainedFocus, windowEvent::LostFocus,
                                  windowEvent::MouseMoved, windowEvent::MouseButtonPressed,
-                                 windowEvent::MouseButtonReleased, windowEvent::MouseWheelScrolled>
+                                 windowEvent::MouseButtonReleased, windowEvent::MouseWheelScrolled,
+                                 windowEvent::KeyPressed, windowEvent::KeyReleased>
 {
 public:
   WindowEventSubscriber(aw::msg::Bus& bus) : Subscriber(bus) {}
@@ -22,5 +23,7 @@ public:
   virtual void receive(const windowEvent::MouseButtonPressed& event) {}
   virtual void receive(const windowEvent::MouseButtonReleased& event) {}
   virtual void receive(const windowEvent::MouseWheelScrolled& event) {}
+  virtual void receive(const windowEvent::KeyPressed& event) {}
+  virtual void receive(const windowEvent::KeyReleased& event) {}
 };
 } // namespace aw::engine

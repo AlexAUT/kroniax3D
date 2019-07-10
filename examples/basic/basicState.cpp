@@ -1,7 +1,7 @@
 #include "basicState.hpp"
 
 #include <aw/engine/engine.hpp>
-#include <aw/engine/resources/loaders/assimpLoader.hpp>
+#include <aw/engine/resources/loaders/ofbxLoader.hpp>
 #include <aw/graphics/core/shaderStage.hpp>
 #include <aw/opengl/opengl.hpp>
 #include <aw/util/colors.hpp>
@@ -15,49 +15,70 @@ BasicState::BasicState(aw::engine::Engine& engine) :
     WindowEventSubscriber(engine.messageBus()),
     mEngine(engine)
 {
-  aw::engine::AssimpLoader loader;
+  aw::engine::OFBXLoader loader;
   if (!loader.load(mShipMesh,
                    "/home/alex/Documents/git/awEngine/examples/basic/assets/meshes/ship.fbx"))
   {
     LOG_APP_E("Could not the ship mesh");
   }
-  using namespace aw::math;
-  mShipMesh.transform().scale(Vec3{0.15});
 
   if (!loader.load(mLevelMesh,
-                   "/home/alex/Documents/git/awEngine/examples/basic/assets/levels/level1.fbx"))
+                   "/home/alex/Documents/git/awEngine/examples/basic/assets/levels/level3.fbx"))
   {
     LOG_APP_E("Could not load the level mesh!");
   }
 
-  aw::graphics::ShaderStage vShader(aw::graphics::ShaderStage::Type::Vertex);
+  if (!loader.load(mMissleMesh,
+                   "/home/alex/Documents/git/awEngine/examples/basic/assets/meshes/missle.fbx"))
+  {
+    LOG_APP_E("Could not load the missle mesh!");
+  }
+  mMissleMesh.transform().scale(aw::Vec3{0.05});
+
+  aw::ShaderStage vShader(aw::ShaderStage::Type::Vertex);
   vShader.loadFromPath(
       "/home/alex/Documents/git/awEngine/examples/basic/assets/shaders/simple_vs.glsl");
 
-  aw::graphics::ShaderStage fShader(aw::graphics::ShaderStage::Type::Fragment);
+  aw::ShaderStage fShader(aw::ShaderStage::Type::Fragment);
   fShader.loadFromPath(
       "/home/alex/Documents/git/awEngine/examples/basic/assets/shaders/simple_fs.glsl");
 
   mBasicShader.link(vShader, fShader);
 
-  GL_CHECK(glClearColor(0.75, 0.75, 0.75, 1.0));
+  const auto clearColor = aw::Colors::BEIGE;
+  GL_CHECK(glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0));
   GL_CHECK(glEnable(GL_DEPTH_TEST));
 
   mCamController.distance(4.f);
 
-  mShip.transform().position(aw::math::Vec3{0.f, 0.25f, 0.f});
-  mShip.velocityDir(aw::math::Vec3{0.f, 0.f, -1.f});
-  mShip.velocity(1.f);
+  mShipMesh.transform().scale(aw::Vec3{0.15});
+  mShip.transform().position(aw::Vec3{0.f, 1.5f, 0.f});
+  mShip.velocityDir(aw::Vec3{0.f, 0.f, -1.f});
+  mShip.velocity(2.f);
+
+  mCamController.rotation({aw::pi_2(), 0.f});
+
+  mShipController2.setShip(&mShip);
 }
 
 void BasicState::onShow() {}
 
 void BasicState::update(float dt)
 {
-  mPhysicsController.update(dt, mShip);
-  mShipController.update(dt, mShip);
+  if (!mPause)
+  {
+    // mPhysicsController.update(dt, mShip);
+    // mShipController.update(dt, mShip);
+    mShipController2.update(dt);
 
-  mShip.update(dt);
+    mShip.update(dt);
+
+    for (auto& missle : mMissles)
+    {
+      if (missle)
+        missle->update(dt);
+    }
+  }
 
   mCamController.lookAt(mShip.transform().position());
   mCamController.apply(mCamera);
@@ -73,7 +94,7 @@ void BasicState::render()
   mBasicShader.set("mvp", mCamera.viewProjection() * mShip.transform().toMatrix() *
                               mShipMesh.transform().toMatrix());
   mBasicShader.set("view", mCamera.view());
-  mBasicShader.set("color", aw::Colors::BLANCHEDALMOND);
+  mBasicShader.set("color", aw::Colors::DARKGOLDENROD);
 
   for (auto i = 0U; i < mShipMesh.subMeshes().size(); i++)
   {
@@ -87,7 +108,7 @@ void BasicState::render()
   mBasicShader.bind();
   mBasicShader.set("mvp", mCamera.viewProjection() * mLevelMesh.transform().toMatrix());
   mBasicShader.set("view", mCamera.view());
-  mBasicShader.set("color", aw::Colors::ROYALBLUE);
+  mBasicShader.set("color", aw::Colors::FORESTGREEN);
 
   auto q = mShipMesh.transform().rotation();
 
@@ -97,6 +118,27 @@ void BasicState::render()
 
     GL_CHECK(glDrawElements(GL_TRIANGLES, subMesh.indicesCount, GL_UNSIGNED_INT,
                             reinterpret_cast<const void*>(subMesh.indicesOffset)));
+  }
+  mMissleMesh.bind();
+  mBasicShader.bind();
+  mBasicShader.set("view", mCamera.view());
+  mBasicShader.set("color", aw::Colors::CRIMSON);
+
+  for (auto& missle : mMissles)
+  {
+    if (!missle)
+      continue;
+
+    mBasicShader.set("mvp", mCamera.viewProjection() * missle->transform().toMatrix() *
+                                mMissleMesh.transform().toMatrix());
+
+    for (auto i = 0U; i < mMissleMesh.subMeshes().size(); i++)
+    {
+      const auto& subMesh = mMissleMesh.subMeshes()[i];
+
+      GL_CHECK(glDrawElements(GL_TRIANGLES, subMesh.indicesCount, GL_UNSIGNED_INT,
+                              reinterpret_cast<const void*>(subMesh.indicesOffset)));
+    }
   }
 }
 
@@ -115,7 +157,7 @@ void BasicState::receive(const aw::windowEvent::MouseMoved& event)
 {
   if (mRightPressed)
   {
-    auto rot = aw::math::Vec2(event.delta.y, -event.delta.x) * 0.01f;
+    auto rot = aw::Vec2(event.delta.y, -event.delta.x) * 0.01f;
     mCamController.rotation(mCamController.rotation() + rot);
   }
 }
@@ -144,4 +186,25 @@ void BasicState::receive(const aw::windowEvent::MouseWheelScrolled& event)
   {
     mCamController.distance(mCamController.distance() + event.delta);
   }
+}
+
+void BasicState::receive(const aw::windowEvent::KeyPressed& event)
+{
+  if (event.key == aw::keyboard::Key::Space)
+    mMissles.emplace_back(new Missle(mShip));
+
+  if (event.key == aw::keyboard::Key::LAlt)
+    mPause = !mPause;
+
+  if (event.key == aw::keyboard::Key::Left)
+    mShipController2.rotateLeft();
+
+  if (event.key == aw::keyboard::Key::Right)
+    mShipController2.rotateRight();
+}
+
+void BasicState::receive(const aw::windowEvent::KeyReleased& event)
+{
+  if (event.key == aw::keyboard::Key::Space)
+    mShipController.steerUp(false);
 }

@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-namespace aw::graphics
+namespace aw
 {
 class ShaderProgram;
 
@@ -62,4 +62,4 @@ private:
   std::vector<TextureSlot> mDiffuseSlots;
   std::vector<TextureSlot> mNormalSlots;
 };
-} // namespace aw::graphics
+} // namespace aw

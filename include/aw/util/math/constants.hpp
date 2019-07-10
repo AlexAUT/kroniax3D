@@ -1,6 +1,6 @@
 #pragma once
 
-namespace aw::math
+namespace aw
 {
 template <typename Type = float>
 constexpr Type pi()
@@ -28,4 +28,4 @@ constexpr Type to_deg()
 {
   return 180.f / pi<Type>();
 }
-} // namespace aw::math
+} // namespace aw

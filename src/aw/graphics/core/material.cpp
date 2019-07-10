@@ -3,7 +3,7 @@
 #include <aw/graphics/core/shaderProgram.hpp>
 #include <aw/opengl/opengl.hpp>
 
-namespace aw::graphics
+namespace aw
 {
 Texture2D* getFallbackTexture()
 {
@@ -103,4 +103,4 @@ const TextureSlot& Material::diffuseSlot(unsigned index) const
   return mDiffuseSlots[index];
 }
 
-} // namespace aw::graphics
+} // namespace aw

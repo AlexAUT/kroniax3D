@@ -10,7 +10,7 @@ public:
   void steerUp(bool value);
 
 private:
-  float mUpForce{0.75f};
+  float mUpForce{1.20f};
 
   bool mIsSteeringUp;
 };

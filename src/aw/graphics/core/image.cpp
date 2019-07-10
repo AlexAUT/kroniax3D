@@ -9,7 +9,7 @@
 
 #include <cstring>
 
-namespace aw::graphics
+namespace aw
 {
 Image::Image(PixelFormat format, unsigned width, unsigned height, std::unique_ptr<uint8> data) :
     mData(std::move(data)),
@@ -172,4 +172,4 @@ Image Image::convertToPixelFormat(const Image& image, PixelFormat newFormat)
   return newImage;
 }
 
-} // namespace aw::graphics
+} // namespace aw

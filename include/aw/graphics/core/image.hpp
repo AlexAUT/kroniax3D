@@ -7,7 +7,7 @@
 #include <memory>
 #include <string_view>
 
-namespace aw::graphics
+namespace aw
 {
 class Image
 {
@@ -47,4 +47,4 @@ private:
   PixelFormat mPixelFormat;
 };
 
-} // namespace aw::graphics
+} // namespace aw

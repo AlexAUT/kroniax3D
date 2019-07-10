@@ -4,42 +4,44 @@
 
 #include <cassert>
 
-namespace aw::graphics
+namespace aw
 {
 GLenum toGL(BindType type);
 GLbitfield toGL(UsageType type);
 
-BufferObject::BufferObject(BindType type) : BufferObject(type, UsageType::StaticDraw)
+GPUBufferObject::GPUBufferObject(BindType type) : GPUBufferObject(type, UsageType::StaticDraw)
 {
   GL_CHECK(glGenBuffers(1, &mId));
 }
 
-BufferObject::BufferObject(BindType type, UsageType usage) : mType(toGL(type)), mUsage(toGL(usage))
+GPUBufferObject::GPUBufferObject(BindType type, UsageType usage) :
+    mType(toGL(type)),
+    mUsage(toGL(usage))
 {
   GL_CHECK(glGenBuffers(1, &mId));
 }
 
-BufferObject::~BufferObject()
+GPUBufferObject::~GPUBufferObject()
 {
   GL_CHECK(glDeleteBuffers(1, &mId));
 }
 
-void BufferObject::setData(const void* data, size_t size)
+void GPUBufferObject::setData(const void* data, size_t size)
 {
   GL_CHECK(glBufferData(mType, size, data, mUsage));
 }
 
-void BufferObject::setSubData(const void* data, size_t size, ptrdiff offset)
+void GPUBufferObject::setSubData(const void* data, size_t size, ptrdiff offset)
 {
   GL_CHECK(glBufferSubData(mType, offset, size, data));
 }
 
-void BufferObject::bind() const
+void GPUBufferObject::bind() const
 {
   GL_CHECK(glBindBuffer(mType, mId));
 }
 
-void BufferObject::unbind() const
+void GPUBufferObject::unbind() const
 {
   GL_CHECK(glBindBuffer(mType, 0));
 }
@@ -98,4 +100,4 @@ GLbitfield toGL(UsageType type)
   }
 }
 
-} // namespace aw::graphics
+} // namespace aw

@@ -23,7 +23,7 @@ private:
 
   sf::Window mWindow;
 
-  math::Vec2i mLastMousePos;
+  Vec2i mLastMousePos;
 
   bool mFirstMouseMoved{true};
 };

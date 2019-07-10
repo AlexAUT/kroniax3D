@@ -82,12 +82,12 @@ auto StaticMesh::indices() const -> const Indices&
   return mIndices;
 }
 
-graphics::Transform& StaticMesh::transform()
+Transform& StaticMesh::transform()
 {
   return mTransform;
 }
 
-const graphics::Transform& StaticMesh::transform() const
+const Transform& StaticMesh::transform() const
 {
   return mTransform;
 }

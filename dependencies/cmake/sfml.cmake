@@ -8,7 +8,7 @@ ExternalProject_Add(SFML_Debug_Shared
              -DBUILD_SHARED_LIBS=ON
              -DSFML_BUILD_AUDIO=OFF
              -DSFML_BUILD_GRAPHICS=OFF
-             -DSFML_BUILD_NETWORK=OFF
+             -DSFML_BUILD_NETWORK=ON
              -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}
              -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
              ${OS_ARGS}
@@ -22,7 +22,7 @@ ExternalProject_Add(SFML_Debug_Static
              -DBUILD_SHARED_LIBS=OFF
              -DSFML_BUILD_AUDIO=OFF
              -DSFML_BUILD_GRAPHICS=OFF
-             -DSFML_BUILD_NETWORK=OFF
+             -DSFML_BUILD_NETWORK=ON
              -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}
              -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
              ${OS_ARGS}
@@ -36,7 +36,7 @@ ExternalProject_Add(SFML_Release_Shared
              -DBUILD_SHARED_LIBS=ON
              -DSFML_BUILD_AUDIO=OFF
              -DSFML_BUILD_GRAPHICS=OFF
-             -DSFML_BUILD_NETWORK=OFF
+             -DSFML_BUILD_NETWORK=ON
              -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}
              -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
              ${OS_ARGS}
@@ -50,7 +50,7 @@ ExternalProject_Add(SFML_Release_Static
              -DBUILD_SHARED_LIBS=OFF
              -DSFML_BUILD_AUDIO=OFF
              -DSFML_BUILD_GRAPHICS=OFF
-             -DSFML_BUILD_NETWORK=OFF
+             -DSFML_BUILD_NETWORK=ON
              -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}
              -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
              ${OS_ARGS}

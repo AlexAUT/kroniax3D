@@ -1,6 +1,6 @@
 #pragma once
 
-namespace aw::graphics
+namespace aw
 {
 enum class BindType
 {

@@ -5,18 +5,18 @@
 #include <aw/graphics/core/bindType.hpp>
 #include <aw/graphics/core/usageType.hpp>
 
-namespace aw::graphics
+namespace aw
 {
 
-class BufferObject
+class GPUBufferObject
 {
 public:
-  BufferObject(BindType type);
-  BufferObject(BindType type, UsageType usage);
-  virtual ~BufferObject();
+  GPUBufferObject(BindType type);
+  GPUBufferObject(BindType type, UsageType usage);
+  virtual ~GPUBufferObject();
 
-  BufferObject(const BufferObject&) = delete;
-  BufferObject operator=(const BufferObject&) = delete;
+  GPUBufferObject(const GPUBufferObject&) = delete;
+  GPUBufferObject operator=(const GPUBufferObject&) = delete;
 
   template <typename Container>
   void setData(const Container& container);
@@ -37,21 +37,21 @@ private:
   GLbitfield mUsage;
 };
 
-} // namespace aw::graphics
+} // namespace aw
 
-namespace aw::graphics
+namespace aw
 {
 template <typename Container>
-inline void BufferObject::setData(const Container& container)
+inline void GPUBufferObject::setData(const Container& container)
 {
   constexpr auto elementSize = sizeof(typename Container::value_type);
   setData(container.data(), elementSize * container.size());
 }
 
 template <typename Container>
-inline void BufferObject::setSubData(const Container& container, ptrdiff offset)
+inline void GPUBufferObject::setSubData(const Container& container, ptrdiff offset)
 {
   constexpr auto elementSize = sizeof(typename Container::value_type);
   setSubData(container.data(), elementSize * container.size(), offset);
 }
-} // namespace aw::graphics
+} // namespace aw

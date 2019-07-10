@@ -8,9 +8,9 @@ endif()
 
 ExternalProject_Add(fmt_Debug_Static
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/fmt
-  #GIT_REPOSITORY "https://github.com/fmtlib/fmt"
-  #GIT_TAG "8d8ea21c6947b0b5c579878965add8e7b2e8e7cc"
-  DOWNLOAD_COMMAND ""
+  GIT_REPOSITORY "https://github.com/fmtlib/fmt"
+  GIT_TAG "8d8ea21c6947b0b5c579878965add8e7b2e8e7cc"
+  #DOWNLOAD_COMMAND ""
   UPDATE_COMMAND ""
   CMAKE_ARGS -DCMAKE_BUILD_TYPE=Debug
              -DBUILD_SHARED_LIBS=OFF
@@ -18,6 +18,7 @@ ExternalProject_Add(fmt_Debug_Static
              -DFMT_TEST=OFF
              -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}
              -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+             -DCMAKE_POSITION_INDEPENDENT_CODE=ON
              ${OS_ARGS}
              ${ANDROID_FLAGS}
 )
@@ -33,6 +34,7 @@ ExternalProject_Add(fmt_Release_Static
              -DFMT_TEST=OFF
              -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}
              -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+             -DCMAKE_POSITION_INDEPENDENT_CODE=ON
              ${OS_ARGS}
              ${ANDROID_FLAGS}
 )

@@ -4,7 +4,7 @@
 #include <aw/opengl/types.hpp>
 #include <aw/util/math/vector.hpp>
 
-namespace aw::graphics
+namespace aw
 {
 class Image;
 
@@ -48,18 +48,18 @@ public:
   void wrapModeT(WrapMode mode);
 
   GLuint id() const { return mId; }
-  math::Vec2u size() const { return mSize; }
+  Vec2u size() const { return mSize; }
   PixelFormat pixelFormat() const { return mPixelFormat; }
 
 private:
 private:
   GLuint mId;
 
-  math::Vec2u mSize;
+  Vec2u mSize;
   PixelFormat mPixelFormat;
 
   // Used to unbind the correct texture unit
   mutable unsigned mBoundTextureUnit;
 };
 
-} // namespace aw::graphics
+} // namespace aw

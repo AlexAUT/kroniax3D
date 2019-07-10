@@ -4,9 +4,9 @@
 #include <aw/graphics/core/vertexLayout.hpp>
 #include <aw/opengl/types.hpp>
 
-namespace aw::graphics
+namespace aw
 {
-class BufferObject;
+class GPUBufferObject;
 
 class VertexArrayObject
 {
@@ -19,10 +19,10 @@ public:
   void bind() const;
   void unbind() const;
 
-  void addVertexAttribute(const BufferObject* vbo, VertexAttribute attribute);
+  void addVertexAttribute(const GPUBufferObject* vbo, VertexAttribute attribute);
 
   template <size_t T>
-  void addVertexAttributes(const BufferObject* vbo, const VertexLayout<T>& layout);
+  void addVertexAttributes(const GPUBufferObject* vbo, const VertexLayout<T>& layout);
 
   GLuint id() const { return mVAOHandle; }
 
@@ -31,10 +31,11 @@ private:
 };
 
 template <size_t T>
-void VertexArrayObject::addVertexAttributes(const BufferObject* vbo, const VertexLayout<T>& layout)
+void VertexArrayObject::addVertexAttributes(const GPUBufferObject* vbo,
+                                            const VertexLayout<T>& layout)
 {
   for (const auto& a : layout)
     addVertexAttribute(vbo, a);
 }
 
-} // namespace aw::graphics
+} // namespace aw

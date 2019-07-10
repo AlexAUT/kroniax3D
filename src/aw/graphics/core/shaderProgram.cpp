@@ -5,7 +5,7 @@
 #include <aw/opengl/opengl.hpp>
 #include <aw/util/math/matrix.hpp>
 
-namespace aw::graphics
+namespace aw
 {
 ShaderProgram::ShaderProgram() : mId(GL_CHECK(glCreateProgram())) {}
 
@@ -55,42 +55,42 @@ GLint ShaderProgram::getUniformLocation(const char* name) const
   return loc;
 }
 
-void ShaderProgram::set(const char* name, const math::Mat4& mat) const
+void ShaderProgram::set(const char* name, const Mat4& mat) const
 {
   set(getUniformLocation(name), mat);
 }
 
-void ShaderProgram::set(GLint location, const math::Mat4& mat) const
+void ShaderProgram::set(GLint location, const Mat4& mat) const
 {
   GL_CHECK(glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]));
 }
-void ShaderProgram::set(const char* name, const math::Vec2& vec) const
+void ShaderProgram::set(const char* name, const Vec2& vec) const
 {
   set(getUniformLocation(name), vec);
 }
 
-void ShaderProgram::set(GLint location, const math::Vec2& vec) const
+void ShaderProgram::set(GLint location, const Vec2& vec) const
 {
   GL_CHECK(glUniform2f(location, vec.x, vec.y));
 }
 
-void ShaderProgram::set(const char* name, const math::Vec3& vec) const
+void ShaderProgram::set(const char* name, const Vec3& vec) const
 {
   set(getUniformLocation(name), vec);
 }
 
-void ShaderProgram::set(GLint location, const math::Vec3& vec) const
+void ShaderProgram::set(GLint location, const Vec3& vec) const
 {
 
   GL_CHECK(glUniform3f(location, vec.x, vec.y, vec.z));
 }
 
-void ShaderProgram::set(const char* name, const math::Vec4& vec) const
+void ShaderProgram::set(const char* name, const Vec4& vec) const
 {
   set(getUniformLocation(name), vec);
 }
 
-void ShaderProgram::set(GLint location, const math::Vec4& vec) const
+void ShaderProgram::set(GLint location, const Vec4& vec) const
 {
   GL_CHECK(glUniform4f(location, vec.x, vec.y, vec.z, vec.w));
 }
@@ -114,4 +114,4 @@ void ShaderProgram::set(GLint location, int value) const
   GL_CHECK(glUniform1i(location, value));
 }
 
-} // namespace aw::graphics
+} // namespace aw

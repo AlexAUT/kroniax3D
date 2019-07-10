@@ -18,9 +18,9 @@
 
 #include <glm/gtx/string_cast.hpp>
 
-inline aw::math::Mat4 aiMatrix4x4ToGlm(const aiMatrix4x4& from)
+inline aw::Mat4 aiMatrix4x4ToGlm(const aiMatrix4x4& from)
 {
-  aw::math::Mat4 to;
+  aw::Mat4 to;
 
   to[0][0] = static_cast<float>(from.a1);
   to[0][1] = static_cast<float>(from.b1);
@@ -105,7 +105,7 @@ bool AssimpLoader::load(StaticMesh& mesh, const char* path)
   std::stack<aiNode*> searchStack;
   searchStack.push(scene->mRootNode);
 
-  math::Mat4 transform{1.f};
+  Mat4 transform{1.f};
 
   while (!searchStack.empty())
   {
@@ -155,9 +155,8 @@ bool AssimpLoader::parseMesh(const aiScene* scene, unsigned meshIndex)
 
   for (auto i = 0U; i < mesh->mNumVertices; i++)
   {
-    mPositions.push_back(
-        math::Vec3{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z});
-    mNormals.push_back(math::Vec3{mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z});
+    mPositions.push_back(Vec3{mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z});
+    mNormals.push_back(Vec3{mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z});
   }
 
   // First check if we have enough UVs created, if not create a new channel and resize it to
@@ -195,9 +194,9 @@ bool AssimpLoader::parseMesh(const aiScene* scene, unsigned meshIndex)
   return true;
 }
 
-aw::graphics::Texture2D::WrapMode assimpWrapModeToAw(aiTextureMapMode mode)
+aw::Texture2D::WrapMode assimpWrapModeToAw(aiTextureMapMode mode)
 {
-  using WrapMode = aw::graphics::Texture2D::WrapMode;
+  using WrapMode = aw::Texture2D::WrapMode;
   switch (mode)
   {
   case aiTextureMapMode_Wrap:
@@ -274,13 +273,13 @@ bool AssimpLoader::parseMaterial(const aiScene* scene, unsigned matIndex, const 
       LOG_E("Unsupported texture mapping mode, only UV mapping is supported!");
       return false;
     }
-    aw::graphics::TextureSlot slot;
+    aw::TextureSlot slot;
     slot.uvIndex = uvIndex;
     auto wrapMode = assimpWrapModeToAw(mapMode);
     slot.modeS = wrapMode;
     slot.modeT = wrapMode;
-    slot.magFilter = aw::graphics::Texture2D::MagFilter::LINEAR;
-    slot.minFilter = aw::graphics::Texture2D::MinFilter::LINEAR;
+    slot.magFilter = aw::Texture2D::MagFilter::LINEAR;
+    slot.minFilter = aw::Texture2D::MinFilter::LINEAR;
 
     std::string texPath(aPath.C_Str());
     auto posForwardSlash = texPath.find_last_of("/") + 1;
@@ -293,7 +292,7 @@ bool AssimpLoader::parseMaterial(const aiScene* scene, unsigned matIndex, const 
     std::string foundTexPath = searchTexture(texName, texPath, path);
     if (!foundTexPath.empty())
     {
-      graphics::Image image;
+      Image image;
       if (!image.loadFromPath(foundTexPath))
       {
         LOG_E("Failed to load texture: {}", foundTexPath);
@@ -304,7 +303,7 @@ bool AssimpLoader::parseMaterial(const aiScene* scene, unsigned matIndex, const 
       LOG_W("Image {} {} {} {}", image.width(), image.height(),
             static_cast<int>(image.pixelFormat()), imageSize);
 
-      slot.texture2D = std::make_shared<graphics::Texture2D>();
+      slot.texture2D = std::make_shared<Texture2D>();
       slot.texture2D->bind();
       slot.texture2D->load(image);
       slot.texture2D->wrapModeS(slot.modeS);

@@ -1,13 +1,17 @@
 #include "ship.hpp"
 
+#include <aw/util/math/constants.hpp>
+
+#include <glm/gtx/quaternion.hpp>
+
 Ship::Ship() {}
 
-void Ship::velocityDir(aw::math::Vec3 velocityDir)
+void Ship::velocityDir(aw::Vec3 velocityDir)
 {
   mVelocityDir = velocityDir;
 }
 
-aw::math::Vec3 Ship::velocityDir() const
+aw::Vec3 Ship::velocityDir() const
 {
   return mVelocityDir;
 }
@@ -22,12 +26,12 @@ float Ship::velocity() const
   return mVelocity;
 }
 
-aw::graphics::Transform& Ship::transform()
+aw::Transform& Ship::transform()
 {
   return mTransform;
 }
 
-const aw::graphics::Transform& Ship::transform() const
+const aw::Transform& Ship::transform() const
 {
   return mTransform;
 }
@@ -38,5 +42,7 @@ void Ship::update(float dt)
   pos += mVelocityDir * mVelocity * dt;
 
   mTransform.position(pos);
+
+  mTransform.rotation(glm::quatLookAt(mVelocityDir, aw::Vec3{0.f, 1.f, 0.f}));
 }
 

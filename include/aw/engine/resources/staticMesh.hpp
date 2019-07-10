@@ -14,11 +14,11 @@ namespace aw::engine
 class StaticMesh
 {
 public:
-  using Positions = std::vector<math::Vec3>;
-  using Normals = std::vector<math::Vec3>;
-  using UVChannel = std::vector<math::Vec2>;
+  using Positions = std::vector<Vec3>;
+  using Normals = std::vector<Vec3>;
+  using UVChannel = std::vector<Vec2>;
   using Indices = std::vector<uint32>;
-  using Materials = std::vector<graphics::Material>;
+  using Materials = std::vector<Material>;
 
   struct SubMesh
   {
@@ -48,8 +48,8 @@ public:
   const Indices& indices() const;
   const Materials& materials() const;
   const SubMeshes& subMeshes() const;
-  graphics::Transform& transform();
-  const graphics::Transform& transform() const;
+  Transform& transform();
+  const Transform& transform() const;
 
   // This function will generate the GPU buffers
   void update();
@@ -61,15 +61,15 @@ private:
   Positions mPositions;
   Normals mNormals;
   std::vector<UVChannel> mUVChannels;
-  graphics::Transform mTransform;
+  Transform mTransform;
 
   Indices mIndices;
   Materials mMaterials;
 
   SubMeshes mSubMeshes;
 
-  graphics::VertexArrayObject mVAO;
-  graphics::BufferObject mVBO{graphics::BindType::ArrayBuffer};
-  graphics::BufferObject mIBO{graphics::BindType::ElementArrayBuffer};
+  VertexArrayObject mVAO;
+  GPUBufferObject mVBO{BindType::ArrayBuffer};
+  GPUBufferObject mIBO{BindType::ElementArrayBuffer};
 };
 } // namespace aw::engine

@@ -47,7 +47,7 @@ void Window::handleEvents()
       break;
     case sf::Event::MouseMoved:
     {
-      math::Vec2i mousePos{event.mouseMove.x, event.mouseMove.y};
+      Vec2i mousePos{event.mouseMove.x, event.mouseMove.y};
       auto delta = mousePos - mLastMousePos;
       mLastMousePos = mousePos;
 
@@ -76,6 +76,12 @@ void Window::handleEvents()
       break;
     case sf::Event::MouseWheelMoved:
       break; // Deprecated
+    case sf::Event::KeyPressed:
+      mMessageBus.channel<windowEvent::KeyPressed>().broadcast({event.key.code});
+      break;
+    case sf::Event::KeyReleased:
+      mMessageBus.channel<windowEvent::KeyReleased>().broadcast({event.key.code});
+      break;
     default:
       LOG_ENGINE_W("Event translation not implemented {}\n", event.type);
     }

@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace aw::opengl
+namespace aw
 {
 namespace priv
 {
@@ -56,4 +56,4 @@ GLenum glCheckError(const char* stmt, const char* file, int line, const char* fu
 }
 
 } // namespace priv
-} // namespace aw::opengl
+} // namespace aw

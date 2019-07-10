@@ -1,8 +1,7 @@
 ExternalProject_Add(glm
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source/glm
-  #GIT_REPOSITORY "https://github.com/g-truc/glm"
-  #GIT_TAG "fce2abd01ce21063bd25ba67c9318be83bf48813"
-  DOWNLOAD_COMMAND ""
+  GIT_REPOSITORY "https://github.com/g-truc/glm"
+  GIT_TAG "fce2abd01ce21063bd25ba67c9318be83bf48813"
   UPDATE_COMMAND ""
   CMAKE_ARGS -DGLM_TEST_ENABLE=OFF
              -DBUILD_SHARED_LIBS=OFF

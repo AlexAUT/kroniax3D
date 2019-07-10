@@ -5,7 +5,7 @@
 #include <aw/util/math/quat.hpp>
 #include <aw/util/math/vector.hpp>
 
-namespace aw::graphics
+namespace aw
 {
 class Camera
 {
@@ -28,16 +28,16 @@ public:
   void farClipPlane(float far);
   float farClipPlane() const;
 
-  void position(math::Vec3 position);
-  math::Vec3 position() const;
+  void position(Vec3 position);
+  Vec3 position() const;
 
-  void rotation(math::Quat rotation);
-  math::Quat rotation() const;
+  void rotation(Quat rotation);
+  Quat rotation() const;
 
-  const math::Mat4& inverseView() const;
-  const math::Mat4& view() const;
-  const math::Mat4& projection() const;
-  const math::Mat4& viewProjection() const;
+  const Mat4& inverseView() const;
+  const Mat4& view() const;
+  const Mat4& projection() const;
+  const Mat4& viewProjection() const;
 
 private:
   // Lazy updates
@@ -50,19 +50,19 @@ private:
 
   float mAspectRatio{16.f / 9.f};
   float mOrthoWidth{1920.f};
-  float mFieldOfView{90 * math::to_rad()};
+  float mFieldOfView{90 * to_rad()};
 
   float mNear{0.1f};
   float mFar{1000.f};
 
-  math::Vec3 mPosition{0.f};
-  math::Quat mRotation{glm::identity<math::Quat>()};
+  Vec3 mPosition{0.f};
+  Quat mRotation{glm::identity<Quat>()};
 
   mutable bool mViewDirty{true};
   mutable bool mProjectionDirty{true};
-  mutable math::Mat4 mInverseViewMatrix;
-  mutable math::Mat4 mViewMatrix;
-  mutable math::Mat4 mProjectionMatrix;
-  mutable math::Mat4 mViewProjectionMatrix;
+  mutable Mat4 mInverseViewMatrix;
+  mutable Mat4 mViewMatrix;
+  mutable Mat4 mProjectionMatrix;
+  mutable Mat4 mViewProjectionMatrix;
 };
-} // namespace aw::graphics
+} // namespace aw

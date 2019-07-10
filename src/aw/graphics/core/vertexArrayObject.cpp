@@ -7,7 +7,7 @@
 
 #include <cassert>
 
-namespace aw::graphics
+namespace aw
 {
 VertexArrayObject::VertexArrayObject()
 {
@@ -29,7 +29,7 @@ void VertexArrayObject::unbind() const
   GL_CHECK(glBindVertexArray(0));
 }
 
-void VertexArrayObject::addVertexAttribute(const BufferObject* vbo, VertexAttribute attribute)
+void VertexArrayObject::addVertexAttribute(const GPUBufferObject* vbo, VertexAttribute attribute)
 {
   if (vbo)
     vbo->bind();
@@ -39,4 +39,4 @@ void VertexArrayObject::addVertexAttribute(const BufferObject* vbo, VertexAttrib
                                  attribute.normalized, attribute.stride, attribute.offset));
 }
 
-} // namespace aw::graphics
+} // namespace aw

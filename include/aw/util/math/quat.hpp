@@ -2,7 +2,7 @@
 
 #include <glm/gtc/quaternion.hpp>
 
-namespace aw::math
+namespace aw
 {
 using Quat = glm::quat;
-} // namespace aw::math
+} // namespace aw

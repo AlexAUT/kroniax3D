@@ -4,7 +4,7 @@
 #include <aw/graphics/log.hpp>
 #include <aw/opengl/opengl.hpp>
 
-namespace aw::graphics
+namespace aw
 {
 struct TextureFormat
 {
@@ -192,4 +192,4 @@ TextureFormat pixelFormatToOpengl(PixelFormat format)
   }
   return {GL_NONE, GL_NONE};
 }
-} // namespace aw::graphics
+} // namespace aw

@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 
-namespace aw::graphics
+namespace aw
 {
 
 void Camera::orthographic(bool value)
@@ -91,7 +91,7 @@ float Camera::farClipPlane() const
   return mFar;
 }
 
-void Camera::position(math::Vec3 position)
+void Camera::position(Vec3 position)
 {
   if (mPosition != position)
   {
@@ -100,12 +100,12 @@ void Camera::position(math::Vec3 position)
   }
 }
 
-math::Vec3 Camera::position() const
+Vec3 Camera::position() const
 {
   return mPosition;
 }
 
-void Camera::rotation(math::Quat rotation)
+void Camera::rotation(Quat rotation)
 {
   if (mRotation != rotation)
   {
@@ -114,33 +114,33 @@ void Camera::rotation(math::Quat rotation)
   }
 }
 
-math::Quat Camera::rotation() const
+Quat Camera::rotation() const
 {
   return mRotation;
 }
 
-const math::Mat4& Camera::inverseView() const
+const Mat4& Camera::inverseView() const
 {
   if (mViewDirty)
     updateViewMatrix();
   return mInverseViewMatrix;
 }
 
-const math::Mat4& Camera::view() const
+const Mat4& Camera::view() const
 {
   if (mViewDirty)
     updateViewMatrix();
   return mViewMatrix;
 }
 
-const math::Mat4& Camera::projection() const
+const Mat4& Camera::projection() const
 {
   if (mProjectionDirty)
     updateProjectionMatrix();
   return mProjectionMatrix;
 }
 
-const math::Mat4& Camera::viewProjection() const
+const Mat4& Camera::viewProjection() const
 {
   updateViewProjectionMatrix();
   return mViewProjectionMatrix;
@@ -150,11 +150,11 @@ void Camera::updateViewMatrix() const
 {
   mViewDirty = false;
 
-  mInverseViewMatrix = glm::translate(math::Mat4(1.f), mPosition) * glm::mat4_cast(mRotation);
+  mInverseViewMatrix = glm::translate(Mat4(1.f), mPosition) * glm::mat4_cast(mRotation);
 
-  math::Quat inverseRot = mRotation;
+  Quat inverseRot = mRotation;
   inverseRot.w = -inverseRot.w;
-  mViewMatrix = glm::mat4_cast((inverseRot)) * glm::translate(math::Mat4(1.f), -mPosition);
+  mViewMatrix = glm::mat4_cast((inverseRot)) * glm::translate(Mat4(1.f), -mPosition);
 }
 
 void Camera::updateProjectionMatrix() const
@@ -180,4 +180,4 @@ void Camera::updateViewProjectionMatrix() const
   mViewProjectionMatrix = mProjectionMatrix * mViewMatrix;
 }
 
-} // namespace aw::graphics
+} // namespace aw

@@ -2,16 +2,16 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace aw::graphics
+namespace aw
 {
-const math::Mat4& Transform::toMatrix() const
+const Mat4& Transform::toMatrix() const
 {
   if (mIsCacheDirty)
   {
-    mTransform = math::Mat4(1.f);
-    math::Mat4 scaling = glm::scale(mTransform, mScale);
-    math::Mat4 rotation = glm::mat4_cast(mRotation);
-    math::Mat4 translation = glm::translate(mTransform, mPosition);
+    mTransform = Mat4(1.f);
+    Mat4 scaling = glm::scale(mTransform, mScale);
+    Mat4 rotation = glm::mat4_cast(mRotation);
+    Mat4 translation = glm::translate(mTransform, mPosition);
     mTransform = translation * rotation * scaling;
 
     mIsCacheDirty = false;
@@ -19,4 +19,4 @@ const math::Mat4& Transform::toMatrix() const
 
   return mTransform;
 }
-} // namespace aw::graphics
+} // namespace aw

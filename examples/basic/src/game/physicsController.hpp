@@ -8,5 +8,5 @@ public:
   void update(float dt, Ship& ship);
 
 public:
-  float mGravity{0.25f};
+  float mGravity{0.5};
 };

@@ -8,11 +8,11 @@ class Ship
 public:
   Ship();
 
-  aw::graphics::Transform& transform();
-  const aw::graphics::Transform& transform() const;
+  aw::Transform& transform();
+  const aw::Transform& transform() const;
 
-  void velocityDir(aw::math::Vec3 velocityDir);
-  aw::math::Vec3 velocityDir() const;
+  void velocityDir(aw::Vec3 velocityDir);
+  aw::Vec3 velocityDir() const;
 
   void velocity(float velocity);
   float velocity() const;
@@ -20,8 +20,8 @@ public:
   void update(float dt);
 
 private:
-  aw::graphics::Transform mTransform;
+  aw::Transform mTransform;
 
-  aw::math::Vec3 mVelocityDir{0.f};
+  aw::Vec3 mVelocityDir{0.f};
   float mVelocity{0.f};
 };

@@ -9,6 +9,6 @@ find_package(SFML REQUIRED COMPONENTS window system)
 # Assimp
 find_package(assimp REQUIRED)
 
-target_link_libraries(awEngine PUBLIC assimp::assimp awGraphics awOpenGL awUtil sfml-window sfml-system)
+target_link_libraries(awEngine PUBLIC awGraphics awOpenGL awUtil sfml-window sfml-system)
 
 enableEmscriptenMT(awEngine)

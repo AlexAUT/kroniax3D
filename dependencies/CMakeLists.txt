@@ -21,7 +21,7 @@ include(cmake/glm.cmake)
 include(cmake/fmt.cmake)
 include(cmake/cereal.cmake)
 include(cmake/sfml.cmake)
-include(cmake/assimp.cmake)
+#include(cmake/assimp.cmake)
 
 if((NOT CMAKE_SYSTEM_NAME MATCHES "Android") AND (NOT CMAKE_SYSTEM_NAME MATCHES "Emscripten"))
   include(cmake/catch2.cmake)

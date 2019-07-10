@@ -1,5 +1,6 @@
 #pragma once
 
+#include <aw/engine/window/keyboard.hpp>
 #include <aw/engine/window/mouse.hpp>
 #include <aw/util/math/vector.hpp>
 
@@ -11,7 +12,7 @@ struct Closed
 
 struct Resized
 {
-  math::Vec2u size;
+  Vec2u size;
 };
 
 struct LostFocus
@@ -24,26 +25,36 @@ struct GainedFocus
 
 struct MouseMoved
 {
-  math::Vec2i pos;
-  math::Vec2i delta;
+  Vec2i pos;
+  Vec2i delta;
 };
 
 struct MouseButtonPressed
 {
   mouse::Button button;
-  math::Vec2i pos;
+  Vec2i pos;
 };
 
 struct MouseButtonReleased
 {
   mouse::Button button;
-  math::Vec2i pos;
+  Vec2i pos;
 };
 
 struct MouseWheelScrolled
 {
   mouse::Wheel wheel;
-  math::Vec2i pos;
+  Vec2i pos;
   float delta;
+};
+
+struct KeyPressed
+{
+  keyboard::Key key;
+};
+
+struct KeyReleased
+{
+  keyboard::Key key;
 };
 } // namespace aw::windowEvent
