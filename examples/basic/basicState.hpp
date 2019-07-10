@@ -9,6 +9,7 @@
 #include <aw/graphics/core/shaderProgram.hpp>
 
 #include "src/game/missle.hpp"
+#include "src/game/networkHandler.hpp"
 #include "src/game/physicsController.hpp"
 #include "src/game/ship.hpp"
 #include "src/game/shipController.hpp"
@@ -55,6 +56,8 @@ private:
   PhysicsController mPhysicsController;
   ShipController mShipController;
   ShipController2 mShipController2;
+
+  NetworkHandler mNetworkHandler{"127.0.0.1", 14441};
 
   bool mRightPressed{false};
 

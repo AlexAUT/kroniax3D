@@ -151,7 +151,6 @@ bool OFBXLoader::parseMesh(ofbx::IScene* scene, int meshIndex)
                         static_cast<uint32>(geometry->getIndexCount()), 0});
   for (int i = 0; i < geometry->getIndexCount(); i++)
   {
-    LOG_D("Face index: {}", geometry->getFaceIndices()[i]);
     int fbxIndex = geometry->getFaceIndices()[i];
     auto index = fbxIndex >= 0 ? fbxIndex : (-fbxIndex) - 1;
     mIndices.emplace_back(vertexOffset + static_cast<uint32>(index));

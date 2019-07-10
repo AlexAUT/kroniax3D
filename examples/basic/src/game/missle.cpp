@@ -13,6 +13,8 @@ void Missle::update(float dt)
 
   auto pos = mTransform.position() + mShip.velocityDir() * mSpeed * dt;
   mTransform.position(pos);
+
+  mLifeTime -= dt;
 }
 
 aw::Transform& Missle::transform()

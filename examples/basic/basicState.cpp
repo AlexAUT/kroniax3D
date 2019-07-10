@@ -16,32 +16,27 @@ BasicState::BasicState(aw::engine::Engine& engine) :
     mEngine(engine)
 {
   aw::engine::OFBXLoader loader;
-  if (!loader.load(mShipMesh,
-                   "/home/alex/Documents/git/awEngine/examples/basic/assets/meshes/ship.fbx"))
+  if (!loader.load(mShipMesh, "assets/meshes/ship2.fbx"))
   {
     LOG_APP_E("Could not the ship mesh");
   }
 
-  if (!loader.load(mLevelMesh,
-                   "/home/alex/Documents/git/awEngine/examples/basic/assets/levels/level3.fbx"))
+  if (!loader.load(mLevelMesh, "assets/levels/level3.fbx"))
   {
     LOG_APP_E("Could not load the level mesh!");
   }
 
-  if (!loader.load(mMissleMesh,
-                   "/home/alex/Documents/git/awEngine/examples/basic/assets/meshes/missle.fbx"))
+  if (!loader.load(mMissleMesh, "assets/meshes/missle.fbx"))
   {
     LOG_APP_E("Could not load the missle mesh!");
   }
   mMissleMesh.transform().scale(aw::Vec3{0.05});
 
   aw::ShaderStage vShader(aw::ShaderStage::Type::Vertex);
-  vShader.loadFromPath(
-      "/home/alex/Documents/git/awEngine/examples/basic/assets/shaders/simple_vs.glsl");
+  vShader.loadFromPath("assets/shaders/simple_vs.glsl");
 
   aw::ShaderStage fShader(aw::ShaderStage::Type::Fragment);
-  fShader.loadFromPath(
-      "/home/alex/Documents/git/awEngine/examples/basic/assets/shaders/simple_fs.glsl");
+  fShader.loadFromPath("assets/shaders/simple_fs.glsl");
 
   mBasicShader.link(vShader, fShader);
 
@@ -65,6 +60,7 @@ void BasicState::onShow() {}
 
 void BasicState::update(float dt)
 {
+  mNetworkHandler.update(dt);
   if (!mPause)
   {
     // mPhysicsController.update(dt, mShip);
@@ -80,7 +76,7 @@ void BasicState::update(float dt)
     }
   }
 
-  mCamController.lookAt(mShip.transform().position());
+  // mCamController.lookAt(mShip.transform().position());
   mCamController.apply(mCamera);
 }
 
@@ -94,7 +90,7 @@ void BasicState::render()
   mBasicShader.set("mvp", mCamera.viewProjection() * mShip.transform().toMatrix() *
                               mShipMesh.transform().toMatrix());
   mBasicShader.set("view", mCamera.view());
-  mBasicShader.set("color", aw::Colors::DARKGOLDENROD);
+  mBasicShader.set("color", aw::Colors::ORANGERED);
 
   for (auto i = 0U; i < mShipMesh.subMeshes().size(); i++)
   {
@@ -126,7 +122,7 @@ void BasicState::render()
 
   for (auto& missle : mMissles)
   {
-    if (!missle)
+    if (!missle || !missle->alive())
       continue;
 
     mBasicShader.set("mvp", mCamera.viewProjection() * missle->transform().toMatrix() *
