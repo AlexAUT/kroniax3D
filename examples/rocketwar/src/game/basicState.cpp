@@ -53,7 +53,7 @@ BasicState::BasicState(aw::engine::Engine& engine) :
 
   mCamController.rotation({aw::pi_2(), 0.f});
 
-  mShipController2.setShip(&mShip);
+  mShipController.setShip(&mShip);
 }
 
 void BasicState::onShow() {}
@@ -61,11 +61,15 @@ void BasicState::onShow() {}
 void BasicState::update(float dt)
 {
   mNetworkHandler.update(dt);
+
+  if (mNetworkHandler.shipPositionsVersion() > mShipPosVersion)
+  {
+    mShipPositions = mNetworkHandler.shipPositions();
+  }
+
   if (!mPause)
   {
-    // mPhysicsController.update(dt, mShip);
-    // mShipController.update(dt, mShip);
-    mShipController2.update(dt);
+    mShipController.update(dt);
 
     mShip.update(dt);
 
@@ -98,6 +102,24 @@ void BasicState::render()
 
     GL_CHECK(glDrawElements(GL_TRIANGLES, subMesh.indicesCount, GL_UNSIGNED_INT,
                             reinterpret_cast<const void*>(subMesh.indicesOffset)));
+  }
+
+  for (auto& networkPos : mShipPositions)
+  {
+    aw::Transform transform;
+    transform.position(networkPos);
+    mBasicShader.set("mvp", mCamera.viewProjection() * transform.toMatrix() *
+                                mShipMesh.transform().toMatrix());
+    mBasicShader.set("view", mCamera.view());
+    mBasicShader.set("color", aw::Colors::SKYBLUE);
+
+    for (auto i = 0U; i < mShipMesh.subMeshes().size(); i++)
+    {
+      const auto& subMesh = mShipMesh.subMeshes()[i];
+
+      GL_CHECK(glDrawElements(GL_TRIANGLES, subMesh.indicesCount, GL_UNSIGNED_INT,
+                              reinterpret_cast<const void*>(subMesh.indicesOffset)));
+    }
   }
 
   mLevelMesh.bind();
@@ -162,18 +184,12 @@ void BasicState::receive(const aw::windowEvent::MouseButtonPressed& event)
 {
   if (event.button == aw::mouse::Button::Right)
     mRightPressed = true;
-
-  if (event.button == aw::mouse::Button::Left)
-    mShipController.steerUp(true);
 }
 
 void BasicState::receive(const aw::windowEvent::MouseButtonReleased& event)
 {
   if (event.button == aw::mouse::Button::Right)
     mRightPressed = false;
-
-  if (event.button == aw::mouse::Button::Left)
-    mShipController.steerUp(false);
 }
 
 void BasicState::receive(const aw::windowEvent::MouseWheelScrolled& event)
@@ -193,14 +209,10 @@ void BasicState::receive(const aw::windowEvent::KeyPressed& event)
     mPause = !mPause;
 
   if (event.key == aw::keyboard::Key::Left)
-    mShipController2.rotateLeft();
+    mShipController.rotateLeft();
 
   if (event.key == aw::keyboard::Key::Right)
-    mShipController2.rotateRight();
+    mShipController.rotateRight();
 }
 
-void BasicState::receive(const aw::windowEvent::KeyReleased& event)
-{
-  if (event.key == aw::keyboard::Key::Space)
-    mShipController.steerUp(false);
-}
+void BasicState::receive(const aw::windowEvent::KeyReleased& event) {}

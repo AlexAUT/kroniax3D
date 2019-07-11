@@ -7,7 +7,7 @@
 
 class Ship;
 
-class ShipController2
+class ShipController
 {
 public:
   void setShip(Ship* ship);

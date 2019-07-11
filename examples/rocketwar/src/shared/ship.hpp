@@ -3,6 +3,9 @@
 #include <aw/graphics/core/transform.hpp>
 #include <aw/util/math/vector.hpp>
 
+#include <aw/util/reflection/typeDescriptorClass.hpp>
+#include <aw/util/reflection/types/primitiveTypes.hpp>
+
 class Ship
 {
 public:
@@ -18,6 +21,8 @@ public:
   float velocity() const;
 
   void update(float dt);
+
+  REFLECT()
 
 private:
   aw::Transform mTransform;

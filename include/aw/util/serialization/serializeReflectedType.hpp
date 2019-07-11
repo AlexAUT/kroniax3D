@@ -5,13 +5,22 @@
 
 #include <type_traits>
 
-// template <typename TypeDesc, typename Instance, typename Archive, typename enable = void>
-// void serialize(TypeDesc& desc, Instance& instance, Archive& archive);
+namespace aw::reflect
+{
 template <
     typename TypeDesc, typename Instance, typename Archive,
     typename std::enable_if_t<std::is_base_of_v<aw::reflect::PrimitiveTypeDescriptorBase, TypeDesc>,
                               int>* = nullptr>
 void serialize(TypeDesc& desc, Instance& instance, Archive& archive)
+{
+  static_assert(!std::is_const<TypeDesc>::value, "TEST ASSERT");
+  archive(desc.value(instance));
+}
+template <
+    typename TypeDesc, typename Instance, typename Archive,
+    typename std::enable_if_t<std::is_base_of_v<aw::reflect::PrimitiveTypeDescriptorBase, TypeDesc>,
+                              int>* = nullptr>
+void serialize(TypeDesc& desc, Instance instance, Archive& archive)
 {
   static_assert(!std::is_const<TypeDesc>::value, "TEST ASSERT");
   archive(desc.value(instance));
@@ -33,3 +42,15 @@ void serialize(TypeDesc& desc, Instance& instance, Archive& archive)
 
   archive.finishNode();
 }
+
+template <typename TypeDesc, typename Instance, typename Archive,
+          typename std::enable_if_t<
+              std::is_base_of_v<aw::reflect::ClassTypeDescriptorBase, TypeDesc>, int>* = nullptr>
+void parse(TypeDesc& desc, Instance& instance, Archive& archive)
+{
+  desc.forAllMembers([&instance, &archive](auto& mem) {
+    auto& memTypeDesc = mem.underlyingDescriptor();
+    reflect(mem.underlyingDescriptor(), mem.value(instance), archive);
+  });
+}
+} // namespace aw::reflect

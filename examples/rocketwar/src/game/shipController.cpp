@@ -1,24 +1,24 @@
-#include "shipController2.hpp"
+#include "shipController.hpp"
 
-#include "../../logApp.hpp"
-#include "ship.hpp"
+#include "logApp.hpp"
+#include "shared/ship.hpp"
 
-void ShipController2::setShip(Ship* ship)
+void ShipController::setShip(Ship* ship)
 {
   mShip = ship;
 }
 
-void ShipController2::rotateLeft()
+void ShipController::rotateLeft()
 {
   mRotationSteps = mRotationSteps == 0 ? mNumSteps - 1 : mRotationSteps - 1;
 }
 
-void ShipController2::rotateRight()
+void ShipController::rotateRight()
 {
   mRotationSteps = (mRotationSteps + 1) % mNumSteps;
 }
 
-void ShipController2::update(float dt)
+void ShipController::update(float dt)
 {
   if (!mShip)
     return;

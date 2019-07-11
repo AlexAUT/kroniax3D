@@ -8,12 +8,10 @@
 #include <aw/graphics/core/camera.hpp>
 #include <aw/graphics/core/shaderProgram.hpp>
 
-#include "src/game/missle.hpp"
-#include "src/game/networkHandler.hpp"
-#include "src/game/physicsController.hpp"
-#include "src/game/ship.hpp"
-#include "src/game/shipController.hpp"
-#include "src/game/shipController2.hpp"
+#include "networkHandler.hpp"
+#include "shared/missle.hpp"
+#include "shared/ship.hpp"
+#include "shipController.hpp"
 
 #include <memory>
 
@@ -53,9 +51,7 @@ private:
   aw::OrbitCameraController mCamController;
 
   Ship mShip;
-  PhysicsController mPhysicsController;
   ShipController mShipController;
-  ShipController2 mShipController2;
 
   NetworkHandler mNetworkHandler{"127.0.0.1", 14441};
 
@@ -64,4 +60,7 @@ private:
   bool mPause{true};
 
   std::vector<std::unique_ptr<Missle>> mMissles;
+
+  std::vector<aw::Vec3> mShipPositions;
+  int mShipPosVersion{-1};
 };

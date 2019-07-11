@@ -22,9 +22,9 @@ public:
   using ConstMemberPtr = const MemberType OwningClass::*;
 
   using ConstRefSetter = void (OwningClass::*)(const MemberType&);
-  using ValueSetter = void (OwningClass::*)(const MemberType&);
+  using ValueSetter = void (OwningClass::*)(MemberType);
 
-  using ConstRefGetter = const MemberType& (OwningClass::*)(void)const;
+  using RefGetter = const MemberType& (OwningClass::*)(void)const;
 
   using UnderylingDescriptor = typename TypeResolver<MemberType>::type;
 
@@ -37,10 +37,31 @@ public:
   {
   }
 
-  ClassMember(std::string name, ConstRefGetter getter) : mName(name), mConstRefGetter(getter) {}
+  ClassMember(std::string name, RefGetter getter) : mName(name), mRefGetter(getter) {}
+  ClassMember(std::string name, RefGetter getter, ValueSetter setter) :
+      mName{name},
+      mRefGetter{getter},
+      mValueSetter{setter}
+  {
+  }
 
   constexpr std::string_view name() const { return mName; }
-  MemberType& value(OwningClass& instance) { return instance.*mMemberPtr; }
+
+  constexpr MemberType& value(OwningClass& instance)
+  {
+    if (mMemberPtr)
+      return instance.*mMemberPtr;
+    else
+      return (instance.*mRefGetter)();
+  }
+
+  constexpr void value(OwningClass& instance, const MemberType& value)
+  {
+    if (mMemberPtr)
+      instance.*mMemberPtr = value;
+    else if (mValueSetter)
+      (instance.*mValueSetter)(value);
+  }
 
   static inline auto& underlyingDescriptor() { return TypeResolver<MemberType>::get(); }
 
@@ -50,7 +71,9 @@ private:
   MemberPtr mMemberPtr{nullptr};
   MemberPtr mConstMemberPtr{nullptr};
 
-  ConstRefGetter mConstRefGetter{nullptr};
+  RefGetter mRefGetter{nullptr};
+
+  ValueSetter mValueSetter{nullptr};
 };
 
 // Just to make Template handling easier
@@ -96,7 +119,7 @@ private:
 #TypeName
 
 #define REFLECT_MEMBER(name) , ClassMember(#name, &T::name)
-#define REFLECT_PRIVATE_MEMBER(name, getter) , ClassMember(#name, getter)
+#define REFLECT_PRIVATE_MEMBER(name, getter, setter) , ClassMember(#name, getter, setter)
 
 #define REFLECT_END(TypeName)                                                                      \
 );                                                                                                 \
