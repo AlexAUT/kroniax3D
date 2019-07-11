@@ -12,7 +12,7 @@
 #include "player.hpp"
 #include "shared/missle.hpp"
 #include "shared/ship.hpp"
-#include "shipController.hpp"
+#include "shared/shipController.hpp"
 
 #include <memory>
 #include <mutex>

@@ -14,6 +14,14 @@
 
 class BasicState;
 
+struct ShipUpdate
+{
+  aw::uint64 id;
+  aw::Vec3 pos;
+  aw::Vec3 velocityDir;
+  float velocity;
+};
+
 class NetworkHandler
 {
 public:
@@ -24,11 +32,10 @@ public:
 
   bool connected() const { return mConnected; };
 
-  std::vector<aw::Vec3> shipPositions();
-  int shipPositionsVersion() const { return mShipPositionsVersion; }
-
   aw::RingBuffer<Player, 24> mPlayersToSpawn;
   aw::RingBuffer<aw::uint64, 24> mPlayersToDestroy;
+
+  aw::RingBuffer<ShipUpdate, 24> mShipUpdates;
 
 private:
   void workerThread();
@@ -56,9 +63,6 @@ private:
   sf::TcpSocket mSocket;
 
   std::thread mThread;
-
-  int mShipPositionsVersion{0};
-  std::vector<aw::Vec3> mShipPositions;
 
   aw::uint64 mClientId{0};
 };

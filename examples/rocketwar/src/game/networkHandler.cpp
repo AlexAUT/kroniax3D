@@ -133,21 +133,11 @@ void NetworkHandler::onGameTick(sf::Packet& packet)
     aw::Vec3 pos;
     float velocity;
     aw::Vec3 velocityDir;
-    packet >> clientId >> pos >> velocity >> velocityDir;
-  }
+    ShipUpdate update;
+    packet >> update.id >> update.pos >> update.velocity >> update.velocityDir;
 
-  return;
-  auto cacheVersion = mShipPositionsVersion;
-  mShipPositionsVersion = -1;
-  mShipPositions.clear();
-
-  for (auto i = 0U; i < numberOfPlayer; i++)
-  {
-    aw::Vec3 pos;
-    packet >> pos.x >> pos.y >> pos.z;
-    mShipPositions.push_back(pos);
+    mShipUpdates.put(update);
   }
-  mShipPositionsVersion = cacheVersion + 1;
 }
 
 void NetworkHandler::onGameState(sf::Packet& packet)
@@ -172,10 +162,5 @@ void NetworkHandler::onGameState(sf::Packet& packet)
 
     mPlayersToSpawn.put(player);
   }
-}
-
-std::vector<aw::Vec3> NetworkHandler::shipPositions()
-{
-  return mShipPositions;
 }
 

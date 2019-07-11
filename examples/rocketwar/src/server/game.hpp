@@ -1,6 +1,7 @@
 #pragma once
 
 #include "shared/ship.hpp"
+#include "shared/shipController.hpp"
 
 #include "client.hpp"
 
@@ -17,6 +18,7 @@ public:
   {
     Client* client;
     Ship ship;
+    ShipController shipController;
   };
 
 public:

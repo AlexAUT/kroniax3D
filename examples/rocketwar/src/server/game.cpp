@@ -22,9 +22,13 @@ void Game::addClient(Client* client)
     mGameState << player.ship.velocityDir();
   }
 
-  mPlayers.push_back({client, {}});
+  mPlayers.push_back({client, {}, {}});
   mPlayers.back().ship.transform().position({offset, 1.25f, -1.f});
-  mPlayers.back().ship.velocity(mPlayers.size() + 2);
+  mPlayers.back().ship.velocity(2.f);
+  mPlayers.back().ship.velocityDir(aw::Vec3{0.f, 0.f, -1.f});
+  mPlayers.back().shipController.setShip(&mPlayers.back().ship);
+  mPlayers.back().shipController.update(0.f);
+
   offset += 0.5f;
 
   fmt::print("Added player, player count {}", mPlayers.size());
@@ -79,36 +83,19 @@ void Game::removeClient(Client* client)
   }
 }
 
-class SFMLPacketSerializer
-{
-public:
-  SFMLPacketSerializer(sf::Packet& packet) : mPacket{packet} {}
-
-  void startNode() {}
-  void finishNode() {}
-
-  void setNextName(std::string_view) {}
-
-  template <typename T>
-  void operator()(const T& t)
-  {
-    std::cout << "Insert: " << t;
-    mPacket << t;
-  }
-
-private:
-  sf::Packet& mPacket;
-};
-
 void Game::update(float dt)
 {
   auto lock = std::lock_guard(mPlayerMutex);
+
+  for (auto& player : mPlayers)
+  {
+    player.ship.update(dt);
+  }
 
   mGameTick.clear();
   mGameTick << MessageType::GameTick;
   mGameTick << static_cast<sf::Uint64>(mPlayers.size());
 
-  SFMLPacketSerializer archive(mGameTick);
   for (auto& player : mPlayers)
   {
     auto& t = player.ship.transform();

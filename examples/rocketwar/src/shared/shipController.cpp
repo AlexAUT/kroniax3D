@@ -1,6 +1,5 @@
 #include "shipController.hpp"
 
-#include "logApp.hpp"
 #include "shared/ship.hpp"
 
 void ShipController::setShip(Ship* ship)
@@ -40,8 +39,6 @@ void ShipController::update(float dt)
   {
     diff -= 2 * aw::pi();
   }
-
-  LOG_APP_D("d {} c {} w {}", diff, currentAngle, wantedAngle);
 
   auto stepSize = mRotationSpeed * dt;
 

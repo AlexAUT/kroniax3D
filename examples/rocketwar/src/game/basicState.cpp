@@ -77,6 +77,23 @@ void BasicState::update(float dt)
     }
   }
 
+  while (!mNetworkHandler.mShipUpdates.empty())
+  {
+    auto update = mNetworkHandler.mShipUpdates.get();
+    auto player = std::find_if(mPlayers.begin(), mPlayers.end(),
+                               [update](const auto& player) { return player.id() == update.id; });
+
+    if (player != mPlayers.end())
+    {
+      player->ship().transform().position(update.pos);
+      player->ship().velocity(update.velocity);
+      player->ship().velocityDir(update.velocityDir);
+    }
+  }
+
+  for (auto& player : mPlayers)
+    player.ship().update(dt);
+
   if (!mPause)
   {
     for (auto& missle : mMissles)

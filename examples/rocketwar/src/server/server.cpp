@@ -68,7 +68,7 @@ bool Server::run(int port)
 
 void Server::gameThreadFunc()
 {
-  const float TICK_RATE = 1.f / 30.f;
+  const float TICK_RATE = 1.f / 8.f;
 
   aw::Clock clock;
   while (mRunning)
