@@ -1,5 +1,7 @@
 #include "networkHandler.hpp"
 
+#include "basicState.hpp"
+
 #include <aw/util/math/vector.hpp>
 #include <aw/util/types.hpp>
 
@@ -11,7 +13,8 @@
 
 #include <iostream>
 
-NetworkHandler::NetworkHandler(std::string serverAddress, int port) :
+NetworkHandler::NetworkHandler(BasicState& gameState, std::string serverAddress, int port) :
+    mGameState(gameState),
     mServerAddress{serverAddress},
     mPort{port},
     mThread([this]() { this->workerThread(); })
@@ -61,6 +64,21 @@ void NetworkHandler::workerThread()
 
     switch (static_cast<MessageType>(type))
     {
+    case MessageType::ClientInformation:
+      onClientInformation(packet);
+      break;
+    case MessageType::ShipSpawned:
+      onShipSpawned(packet);
+      break;
+    case MessageType::ClientConnected:
+      onClientConnected(packet);
+      break;
+    case MessageType::ClientDisconnected:
+      onClientDisconnected(packet);
+      break;
+    case MessageType::GameState:
+      onGameState(packet);
+      break;
     case MessageType::GameTick:
       onGameTick(packet);
       break;
@@ -73,6 +91,36 @@ void NetworkHandler::workerThread()
 }
 
 void NetworkHandler::tryToConnect() {}
+
+void NetworkHandler::onClientInformation(sf::Packet& packet)
+{
+  packet >> mClientId;
+}
+
+void NetworkHandler::onClientConnected(sf::Packet& packet) {}
+
+void NetworkHandler::onShipSpawned(sf::Packet& packet)
+{
+  aw::uint64 clientId;
+  aw::Vec3 pos;
+  float velocity;
+  aw::Vec3 velocityDir;
+  packet >> clientId >> pos >> velocity >> velocityDir;
+
+  Player player(clientId);
+  player.ship().transform().position(pos);
+  player.ship().velocity(velocity);
+  player.ship().velocityDir(velocityDir);
+
+  mPlayersToSpawn.put(player);
+}
+
+void NetworkHandler::onClientDisconnected(sf::Packet& packet)
+{
+  aw::uint64 clientId;
+  packet >> clientId;
+  mPlayersToDestroy.put(clientId);
+}
 
 void NetworkHandler::onGameTick(sf::Packet& packet)
 {
@@ -100,6 +148,30 @@ void NetworkHandler::onGameTick(sf::Packet& packet)
     mShipPositions.push_back(pos);
   }
   mShipPositionsVersion = cacheVersion + 1;
+}
+
+void NetworkHandler::onGameState(sf::Packet& packet)
+{
+  size_t numberOfPlayers;
+  packet >> numberOfPlayers;
+
+  std::cout << "On Gamestate: " << numberOfPlayers << std::endl;
+
+  aw::uint64 clientId;
+  aw::Vec3 pos;
+  float velocity;
+  aw::Vec3 velocityDir;
+  for (size_t i = 0; i < numberOfPlayers; i++)
+  {
+    packet >> clientId >> pos >> velocity >> velocityDir;
+
+    Player player(clientId);
+    player.ship().transform().position(pos);
+    player.ship().velocity(velocity);
+    player.ship().velocityDir(velocityDir);
+
+    mPlayersToSpawn.put(player);
+  }
 }
 
 std::vector<aw::Vec3> NetworkHandler::shipPositions()

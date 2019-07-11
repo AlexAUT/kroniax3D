@@ -9,7 +9,7 @@
 
 #include <fmt/printf.h>
 
-Client::Client(int clientId) : mClientId(clientId)
+Client::Client(aw::uint64 clientId) : mClientId(clientId)
 {
   mSocket.setBlocking(true);
 }

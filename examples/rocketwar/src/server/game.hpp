@@ -30,4 +30,8 @@ private:
   std::mutex mPlayerMutex;
 
   sf::Packet mGameTick;
+  sf::Packet mClientConnected;
+  sf::Packet mShipSpawned;
+  sf::Packet mGameState;
+  sf::Packet mClientDisconnected;
 };

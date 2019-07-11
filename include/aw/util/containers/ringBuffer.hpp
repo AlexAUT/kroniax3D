@@ -32,8 +32,8 @@ template <typename DataType, unsigned size>
 class RingBuffer
 {
 public:
-  // Will put data into the ringbuffer, if there is no space it will override the current reader and delete all not
-  // queried data
+  // Will put data into the ringbuffer, if there is no space it will override the current reader and
+  // delete all not queried data
   void put(const DataType& obj);
   void put(DataType&& obj);
 

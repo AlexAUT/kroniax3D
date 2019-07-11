@@ -13,7 +13,8 @@
 BasicState::BasicState(aw::engine::Engine& engine) :
     State(engine.stateMachine()),
     WindowEventSubscriber(engine.messageBus()),
-    mEngine(engine)
+    mEngine(engine),
+    mNetworkHandler{*this, "127.0.0.1", 14441}
 {
   aw::engine::OFBXLoader loader;
   if (!loader.load(mShipMesh, "assets/meshes/ship2.fbx"))
@@ -47,13 +48,8 @@ BasicState::BasicState(aw::engine::Engine& engine) :
   mCamController.distance(4.f);
 
   mShipMesh.transform().scale(aw::Vec3{0.15});
-  mShip.transform().position(aw::Vec3{0.f, 1.5f, 0.f});
-  mShip.velocityDir(aw::Vec3{0.f, 0.f, -1.f});
-  mShip.velocity(2.f);
 
   mCamController.rotation({aw::pi_2(), 0.f});
-
-  mShipController.setShip(&mShip);
 }
 
 void BasicState::onShow() {}
@@ -62,17 +58,27 @@ void BasicState::update(float dt)
 {
   mNetworkHandler.update(dt);
 
-  if (mNetworkHandler.shipPositionsVersion() > mShipPosVersion)
+  while (!mNetworkHandler.mPlayersToSpawn.empty())
   {
-    mShipPositions = mNetworkHandler.shipPositions();
+    auto p = mNetworkHandler.mPlayersToSpawn.get();
+    mPlayers.push_back(p);
+  }
+
+  while (!mNetworkHandler.mPlayersToDestroy.empty())
+  {
+    auto id = mNetworkHandler.mPlayersToDestroy.get();
+    for (auto it = mPlayers.begin(); it != mPlayers.end(); it++)
+    {
+      if (it->id() == id)
+      {
+        mPlayers.erase(it);
+        break;
+      }
+    }
   }
 
   if (!mPause)
   {
-    mShipController.update(dt);
-
-    mShip.update(dt);
-
     for (auto& missle : mMissles)
     {
       if (missle)
@@ -91,24 +97,11 @@ void BasicState::render()
 
   mShipMesh.bind();
   mBasicShader.bind();
-  mBasicShader.set("mvp", mCamera.viewProjection() * mShip.transform().toMatrix() *
-                              mShipMesh.transform().toMatrix());
-  mBasicShader.set("view", mCamera.view());
-  mBasicShader.set("color", aw::Colors::ORANGERED);
 
-  for (auto i = 0U; i < mShipMesh.subMeshes().size(); i++)
-  {
-    const auto& subMesh = mShipMesh.subMeshes()[i];
-
-    GL_CHECK(glDrawElements(GL_TRIANGLES, subMesh.indicesCount, GL_UNSIGNED_INT,
-                            reinterpret_cast<const void*>(subMesh.indicesOffset)));
-  }
-
-  for (auto& networkPos : mShipPositions)
+  for (auto& player : mPlayers)
   {
     aw::Transform transform;
-    transform.position(networkPos);
-    mBasicShader.set("mvp", mCamera.viewProjection() * transform.toMatrix() *
+    mBasicShader.set("mvp", mCamera.viewProjection() * player.ship().transform().toMatrix() *
                                 mShipMesh.transform().toMatrix());
     mBasicShader.set("view", mCamera.view());
     mBasicShader.set("color", aw::Colors::SKYBLUE);
@@ -133,7 +126,6 @@ void BasicState::render()
   for (auto i = 0U; i < mLevelMesh.subMeshes().size(); i++)
   {
     const auto& subMesh = mLevelMesh.subMeshes()[i];
-
     GL_CHECK(glDrawElements(GL_TRIANGLES, subMesh.indicesCount, GL_UNSIGNED_INT,
                             reinterpret_cast<const void*>(subMesh.indicesOffset)));
   }
@@ -202,17 +194,16 @@ void BasicState::receive(const aw::windowEvent::MouseWheelScrolled& event)
 
 void BasicState::receive(const aw::windowEvent::KeyPressed& event)
 {
-  if (event.key == aw::keyboard::Key::Space)
-    mMissles.emplace_back(new Missle(mShip));
-
   if (event.key == aw::keyboard::Key::LAlt)
     mPause = !mPause;
 
+  /*
   if (event.key == aw::keyboard::Key::Left)
     mShipController.rotateLeft();
 
   if (event.key == aw::keyboard::Key::Right)
     mShipController.rotateRight();
+    */
 }
 
 void BasicState::receive(const aw::windowEvent::KeyReleased& event) {}

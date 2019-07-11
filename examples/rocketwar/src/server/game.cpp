@@ -5,13 +5,22 @@
 #include "shared/gameMessages.hpp"
 #include "shared/packetSerializations.hpp"
 
-#include <aw/util/serialization/serializeReflectedType.hpp>
-
 float offset = 0.f;
 
 void Game::addClient(Client* client)
 {
   auto lock = std::lock_guard(mPlayerMutex);
+
+  mGameState.clear();
+  mGameState << MessageType::GameState;
+  mGameState << mPlayers.size();
+  for (auto& player : mPlayers)
+  {
+    mGameState << player.client->id();
+    mGameState << player.ship.transform().position();
+    mGameState << player.ship.velocity();
+    mGameState << player.ship.velocityDir();
+  }
 
   mPlayers.push_back({client, {}});
   mPlayers.back().ship.transform().position({offset, 1.25f, -1.f});
@@ -19,22 +28,55 @@ void Game::addClient(Client* client)
   offset += 0.5f;
 
   fmt::print("Added player, player count {}", mPlayers.size());
+  fmt::print("Packet size: {}", mClientConnected.getDataSize());
+
+  auto& ship = mPlayers.back().ship;
+
+  mShipSpawned.clear();
+  mShipSpawned << MessageType::ShipSpawned;
+  mShipSpawned << mPlayers.back().client->id();
+  mShipSpawned << ship.transform().position();
+  mShipSpawned << ship.velocity();
+  mShipSpawned << ship.velocityDir();
+
+  for (auto& player : mPlayers)
+  {
+    player.client->send(mClientConnected);
+
+    if (player.client == client)
+    {
+      player.client->send(mGameState);
+    }
+    player.client->send(mShipSpawned);
+  }
 }
 
 void Game::removeClient(Client* client)
 {
   auto lock = std::lock_guard(mPlayerMutex);
 
+  bool deleted = false;
   for (auto it = mPlayers.begin(); it != mPlayers.end(); it++)
   {
     if (it->client == client)
     {
       mPlayers.erase(it);
+      deleted = true;
       break;
     }
   }
 
-  fmt::print("Removed player, player count {}", mPlayers.size());
+  if (deleted)
+  {
+    mClientDisconnected.clear();
+    mClientDisconnected << MessageType::ClientDisconnected;
+    mClientDisconnected << client->id();
+
+    for (auto player : mPlayers)
+      player.client->send(mClientDisconnected);
+
+    fmt::print("Removed player, player count {}", mPlayers.size());
+  }
 }
 
 class SFMLPacketSerializer

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <aw/util/types.hpp>
+
 #include <SFML/Network/TcpSocket.hpp>
 
 #include <thread>
@@ -10,7 +12,7 @@ class Game;
 class Client
 {
 public:
-  Client(int ClientId);
+  Client(aw::uint64 ClientId);
   ~Client();
 
   sf::TcpSocket& socket();
@@ -19,7 +21,7 @@ public:
   void start(Server* server, Game* game);
   void send(sf::Packet& packet);
 
-  int id() const { return mClientId; }
+  aw::uint64 id() const { return mClientId; }
 
 private:
   void threadFunc();
@@ -32,5 +34,5 @@ private:
   Server* mServer;
   Game* mGame;
 
-  int mClientId;
+  aw::uint64 mClientId;
 };

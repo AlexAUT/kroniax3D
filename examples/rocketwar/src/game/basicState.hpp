@@ -9,11 +9,13 @@
 #include <aw/graphics/core/shaderProgram.hpp>
 
 #include "networkHandler.hpp"
+#include "player.hpp"
 #include "shared/missle.hpp"
 #include "shared/ship.hpp"
 #include "shipController.hpp"
 
 #include <memory>
+#include <mutex>
 
 namespace aw::engine
 {
@@ -50,17 +52,12 @@ private:
   aw::Camera mCamera;
   aw::OrbitCameraController mCamController;
 
-  Ship mShip;
-  ShipController mShipController;
-
-  NetworkHandler mNetworkHandler{"127.0.0.1", 14441};
+  NetworkHandler mNetworkHandler;
 
   bool mRightPressed{false};
 
   bool mPause{true};
 
   std::vector<std::unique_ptr<Missle>> mMissles;
-
-  std::vector<aw::Vec3> mShipPositions;
-  int mShipPosVersion{-1};
+  std::vector<Player> mPlayers;
 };

@@ -1,5 +1,8 @@
 #include "server.hpp"
 
+#include "shared/gameMessages.hpp"
+#include "shared/packetSerializations.hpp"
+
 #include <iostream>
 
 #include <aw/util/time/clock.hpp>
@@ -32,7 +35,7 @@ bool Server::run(int port)
   listener.listen(port);
   fmt::print("Listening on PORT {} for new connections\n", port);
 
-  int clientIds = 1;
+  aw::uint64 clientIds = 1;
 
   while (mRunning)
   {
@@ -46,6 +49,11 @@ bool Server::run(int port)
       continue;
     }
     fmt::print("Client connected: {}\n", socket.getRemoteAddress().toString());
+
+    sf::Packet packet;
+    packet << static_cast<int>(MessageType::ClientInformation);
+    packet << client->id();
+    client->send(packet);
 
     auto lock = std::lock_guard(mClientsLock);
     mClients.push_back(std::move(client));

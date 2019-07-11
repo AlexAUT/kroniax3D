@@ -3,10 +3,11 @@
 enum MessageType
 {
   Init,
+  ClientInformation,
+  ClientConnected,
+  ClientDisconnected,
+  GameState,
+  ShipSpawned,
   GameTick,
 };
 
-class GameMessage
-{
-  MessageType type;
-};
