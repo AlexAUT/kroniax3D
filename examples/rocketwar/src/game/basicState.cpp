@@ -17,12 +17,12 @@ BasicState::BasicState(aw::engine::Engine& engine) :
     mNetworkHandler{*this, "127.0.0.1", 14441}
 {
   aw::engine::OFBXLoader loader;
-  if (!loader.load(mShipMesh, "assets/meshes/ship2.fbx"))
+  if (!loader.load(mShipMesh, "assets/meshes/ship.fbx"))
   {
     LOG_APP_E("Could not the ship mesh");
   }
 
-  if (!loader.load(mLevelMesh, "assets/levels/level3.fbx"))
+  if (!loader.load(mLevelMesh, "assets/levels/level1.fbx"))
   {
     LOG_APP_E("Could not load the level mesh!");
   }
