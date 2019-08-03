@@ -2,9 +2,9 @@
 
 #include <aw/util/types.hpp>
 
-#include <SFML/Network/TcpSocket.hpp>
+#include <SFML/Network/IpAddress.hpp>
 
-#include <thread>
+#include <string>
 
 class Server;
 class Game;
@@ -12,27 +12,19 @@ class Game;
 class Client
 {
 public:
-  Client(aw::uint64 ClientId);
-  ~Client();
+  using Id = aw::uint32;
 
-  sf::TcpSocket& socket();
-  const sf::TcpSocket& socket() const;
+public:
+  Client(Id id, std::string name, sf::IpAddress address, unsigned short port);
 
-  void start(Server* server, Game* game);
-  void send(sf::Packet& packet);
-
-  aw::uint64 id() const { return mClientId; }
-
-private:
-  void threadFunc();
+  Id id() const { return mId; }
+  const std::string& name() const { return mName; }
+  const sf::IpAddress address() const { return mAddress; }
+  unsigned short port() const { return mPort; }
 
 private:
-  std::thread mThread;
-
-  sf::TcpSocket mSocket;
-
-  Server* mServer;
-  Game* mGame;
-
-  aw::uint64 mClientId;
+  Id mId;
+  std::string mName;
+  sf::IpAddress mAddress;
+  unsigned short mPort;
 };

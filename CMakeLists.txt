@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 
+project(awEngine)
+
 include(cmake/enableWarnings.cmake)
 include(cmake/addFilesToTarget.cmake)
 include(cmake/emscripten/enableEmscriptenMT.cmake)
 include(cmake/emscripten/enableHTMLOutput.cmake)
+
 
 include(GNUInstallDirs)
 include(ExternalProject)
@@ -36,11 +39,6 @@ option(AW_BUILD_GRAPHICS "Build graphics module" ON)
 option(AW_BUILD_DEPENDENCIES "Build dependencies for current platform" OFF)
 
 message(STATUS "Build depdencies: ${AW_BUILD_DEPENDENCIES}")
-
-#Check if dependencies are already build
-if(AW_BUILD_DEPENDENCIES)
-  include(cmake/buildDependencies.cmake)
-endif()
 
 # Encourage user to specify a build type (e.g. Release, Debug, etc.), otherwise set it to Release.
 if(NOT CMAKE_CONFIGURATION_TYPES)

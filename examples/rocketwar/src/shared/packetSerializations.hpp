@@ -15,4 +15,13 @@ inline sf::Packet& operator>>(sf::Packet& packet, aw::Vec3& vec)
   return packet >> vec.x >> vec.y >> vec.z;
 }
 
+inline sf::Packet& operator<<(sf::Packet& packet, const aw::uint64& val)
+{
+  return packet << val;
+}
+
+inline sf::Packet& operator>>(sf::Packet& packet, aw::uint64& val)
+{
+  return packet >> val;
+}
 

@@ -15,6 +15,7 @@
 #include "shared/shipController.hpp"
 
 #include <memory>
+
 #include <mutex>
 
 namespace aw::engine

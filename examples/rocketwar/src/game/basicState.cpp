@@ -22,7 +22,7 @@ BasicState::BasicState(aw::engine::Engine& engine) :
     LOG_APP_E("Could not the ship mesh");
   }
 
-  if (!loader.load(mLevelMesh, "assets/levels/level1.fbx"))
+  if (!loader.load(mLevelMesh, "assets/levels/level2.fbx"))
   {
     LOG_APP_E("Could not load the level mesh!");
   }
@@ -50,6 +50,8 @@ BasicState::BasicState(aw::engine::Engine& engine) :
   mShipMesh.transform().scale(aw::Vec3{0.15});
 
   mCamController.rotation({aw::pi_2(), 0.f});
+
+  mNetworkHandler.connect();
 }
 
 void BasicState::onShow() {}
@@ -57,39 +59,6 @@ void BasicState::onShow() {}
 void BasicState::update(float dt)
 {
   mNetworkHandler.update(dt);
-
-  while (!mNetworkHandler.mPlayersToSpawn.empty())
-  {
-    auto p = mNetworkHandler.mPlayersToSpawn.get();
-    mPlayers.push_back(p);
-  }
-
-  while (!mNetworkHandler.mPlayersToDestroy.empty())
-  {
-    auto id = mNetworkHandler.mPlayersToDestroy.get();
-    for (auto it = mPlayers.begin(); it != mPlayers.end(); it++)
-    {
-      if (it->id() == id)
-      {
-        mPlayers.erase(it);
-        break;
-      }
-    }
-  }
-
-  while (!mNetworkHandler.mShipUpdates.empty())
-  {
-    auto update = mNetworkHandler.mShipUpdates.get();
-    auto player = std::find_if(mPlayers.begin(), mPlayers.end(),
-                               [update](const auto& player) { return player.id() == update.id; });
-
-    if (player != mPlayers.end())
-    {
-      player->ship().transform().position(update.pos);
-      player->ship().velocity(update.velocity);
-      player->ship().velocityDir(update.velocityDir);
-    }
-  }
 
   for (auto& player : mPlayers)
     player.ship().update(dt);
@@ -213,14 +182,6 @@ void BasicState::receive(const aw::windowEvent::KeyPressed& event)
 {
   if (event.key == aw::keyboard::Key::LAlt)
     mPause = !mPause;
-
-  /*
-  if (event.key == aw::keyboard::Key::Left)
-    mShipController.rotateLeft();
-
-  if (event.key == aw::keyboard::Key::Right)
-    mShipController.rotateRight();
-    */
 }
 
 void BasicState::receive(const aw::windowEvent::KeyReleased& event) {}

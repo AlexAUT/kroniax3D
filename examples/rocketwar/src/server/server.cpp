@@ -7,62 +7,81 @@
 
 #include <aw/util/time/clock.hpp>
 
-#include <SFML/Network/IpAddress.hpp>
-#include <SFML/Network/TcpListener.hpp>
-#include <SFML/Network/TcpSocket.hpp>
-
 #include <fmt/printf.h>
 
-Server::Server()
+Server::Server(network::Port port) : mHost(port)
 {
   mGameThread = std::thread([this]() { this->gameThreadFunc(); });
 }
 
 Server::~Server()
 {
+  mRunning = false;
+
   auto lock = std::lock_guard(mClientsLock);
 
   while (!mClients.empty())
   {
     mClients.pop_back();
   }
+
+  if (mGameThread.joinable())
+    mGameThread.join();
 }
 
-bool Server::run(int port)
+bool Server::run()
 {
-  sf::TcpListener listener;
-  listener.setBlocking(true);
-  listener.listen(port);
-  fmt::print("Listening on PORT {} for new connections\n", port);
-
-  aw::uint64 clientIds = 1;
-
   while (mRunning)
   {
-    auto client = std::make_unique<Client>(clientIds++);
-    sf::TcpSocket socket;
-    auto status = listener.accept(client->socket());
+    mHost.update(0);
 
-    if (status != sf::Socket::Status::Done)
-    {
-      fmt::print("Client connection failed?\n");
-      continue;
-    }
-    fmt::print("Client connected: {}\n", socket.getRemoteAddress().toString());
-
-    sf::Packet packet;
-    packet << static_cast<int>(MessageType::ClientInformation);
-    packet << client->id();
-    client->send(packet);
-
-    auto lock = std::lock_guard(mClientsLock);
-    mClients.push_back(std::move(client));
-    mClients.back()->start(this, &mGame);
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
   }
+  /*
+    mSocket.setBlocking(true);
+    auto bindStatus = mSocket.bind(port);
+    if (bindStatus != sf::UdpSocket::Status::Done)
+    {
+      fmt::print("Failed to bind listening port {}\n", port);
+      return false;
+    }
 
-  listener.close();
-  mRunning = false;
+    fmt::print("Listening on PORT {} for new connections\n", port);
 
+    aw::uint64 clientIds = 1;
+
+    sf::Packet receiveBuffer;
+    sf::IpAddress senderIp;
+    unsigned short senderPort;
+
+    while (mRunning)
+    {
+      auto status = mSocket.receive(receiveBuffer, senderIp, senderPort);
+
+      if (status != sf::Socket::Status::Done)
+      {
+        fmt::print("Message failed?\n");
+        continue;
+      }
+
+      ClientMessages messageType;
+      receiveBuffer >> messageType;
+
+      switch (messageType)
+      {
+      case ClientMessages::Connect:
+        onClientConnect(unzip<ClientConnect>(receiveBuffer), senderIp, senderPort);
+        break;
+      default:
+        fmt::print("Unsupported message type {}\n",
+                   static_cast<std::underlying_type<ClientMessages>::type>(messageType));
+        break;
+      }
+    }
+
+    mSocket.unbind();
+    mRunning = false;
+    */
   return true;
 }
 
@@ -86,15 +105,29 @@ void Server::gameThreadFunc()
   }
 }
 
-void Server::onClientDisconnect(Client* client)
+void Server::onClientConnect(ClientConnect message, sf::IpAddress ip, unsigned short port)
 {
+  static aw::uint32 clientId = 0;
   auto lock = std::lock_guard(mClientsLock);
-  for (auto it = mClients.begin(); it != mClients.end(); it++)
-  {
-    if (it->get() == client)
-    {
-      mClients.erase(it);
-      break;
-    }
-  }
+
+  std::cout << "Client connect: " << message.name << " " << ip.toString() << ":" << port
+            << std::endl;
+
+  mClients.emplace_back(++clientId, std::move(message.name), std::move(ip), port);
+
+  send(ip, port, ClientConnected{clientId});
+}
+
+void Server::onClientDisconnect(sf::Packet& packet, const sf::IpAddress& ip, unsigned short port) {}
+
+template <typename Message>
+void Server::send(const sf::IpAddress& address, unsigned short port, Message&& msg)
+{
+  mSendBuffer.clear();
+  mSendBuffer << Message::type;
+
+  auto refl = aw::reflect::getReflection<Message>();
+  refl.forAllMembers([&](auto& member) { mSendBuffer << member.value(msg); });
+
+  //  mSocket.send(mSendBuffer, address, port);
 }

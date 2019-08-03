@@ -22,8 +22,8 @@ public:
   };
 
 public:
-  void addClient(Client*);
-  void removeClient(Client*);
+  void addClient(Client* client);
+  void removeClient(Client::Id id);
 
   void update(float dt);
 

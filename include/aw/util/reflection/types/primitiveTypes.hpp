@@ -2,6 +2,7 @@
 
 #include <aw/util/reflection/typeDescriptor.hpp>
 #include <aw/util/reflection/typeResolver.hpp>
+#include <aw/util/types.hpp>
 
 #include <iostream>
 
@@ -15,57 +16,32 @@ template <typename PrimitiveType>
 class PrimitiveTypeDescriptor : public TypeDescriptor, public PrimitiveTypeDescriptorBase
 {
 public:
+  using UnderlyingType = PrimitiveType;
+
+public:
   PrimitiveTypeDescriptor(const char* name) : TypeDescriptor(name, sizeof(PrimitiveType)) {}
 
   // To be consistent with other typedescriptors
   PrimitiveType& value(PrimitiveType& type) { return type; }
 };
-template <>
-inline auto& getExternalDescriptor<bool>()
-{
-  static PrimitiveTypeDescriptor<bool> instance("bool");
-  return instance;
-}
 
-template <>
-inline auto& getExternalDescriptor<char>()
-{
-  static PrimitiveTypeDescriptor<char> instance("char");
-  return instance;
-}
+#define CREATE_DESCRIPTOR(Type)                                                                    \
+  template <>                                                                                      \
+  inline auto& getExternalDescriptor<Type>()                                                       \
+  {                                                                                                \
+    static PrimitiveTypeDescriptor<Type> instance(#Type);                                          \
+    return instance;                                                                               \
+  }
 
-template <>
-inline auto& getExternalDescriptor<unsigned char>()
-{
-  static PrimitiveTypeDescriptor<char> instance("uchar");
-  return instance;
-}
+CREATE_DESCRIPTOR(bool)
 
-template <>
-inline auto& getExternalDescriptor<int>()
-{
-  static PrimitiveTypeDescriptor<int> instance("int");
-  return instance;
-}
+CREATE_DESCRIPTOR(aw::uint8)
+CREATE_DESCRIPTOR(aw::uint16)
+CREATE_DESCRIPTOR(aw::uint32)
+CREATE_DESCRIPTOR(aw::uint64)
 
-template <>
-inline auto& getExternalDescriptor<unsigned>()
-{
-  static PrimitiveTypeDescriptor<unsigned> instance("uint");
-  return instance;
-}
-
-template <>
-inline auto& getExternalDescriptor<float>()
-{
-  static PrimitiveTypeDescriptor<float> instance("float");
-  return instance;
-}
-
-template <>
-inline auto& getExternalDescriptor<double>()
-{
-  static PrimitiveTypeDescriptor<double> instance("double");
-  return instance;
-}
+CREATE_DESCRIPTOR(aw::int8)
+CREATE_DESCRIPTOR(aw::int16)
+CREATE_DESCRIPTOR(aw::int32)
+CREATE_DESCRIPTOR(aw::int64)
 } // namespace aw::reflect

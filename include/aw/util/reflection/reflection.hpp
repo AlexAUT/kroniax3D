@@ -2,6 +2,7 @@
 
 namespace aw::reflect
 {
+
 template <typename Type>
 auto& getReflection();
 

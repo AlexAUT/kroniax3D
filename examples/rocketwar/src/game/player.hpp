@@ -3,6 +3,9 @@
 #include <aw/util/types.hpp>
 
 #include "shared/ship.hpp"
+#include "shared/shipController.hpp"
+
+class NetworkHandler;
 
 class Player
 {
@@ -22,6 +25,7 @@ private:
   aw::uint64 mClientId{0};
 
   Ship mShip;
+  ShipController mShipController;
 
   bool mOwner{false};
 };

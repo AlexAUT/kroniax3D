@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 
+project(rocketwars)
+
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD 17)
 
-project(rocketwars)
 add_executable(${PROJECT_NAME}_game)
 add_subdirectory(src/game)
 target_include_directories(${PROJECT_NAME}_game PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -28,6 +29,6 @@ enableHTMLOutput()
 # Supports emscripten MT
 enableEmscriptenMT(${PROJECT_NAME}_game)
 enableEmscriptenMT(${PROJECT_NAME}_server)
+
 target_link_libraries(${PROJECT_NAME}_game PUBLIC awEngine awOpenGL awUtil)
 target_link_libraries(${PROJECT_NAME}_server PUBLIC awEngine awOpenGL awUtil)
-

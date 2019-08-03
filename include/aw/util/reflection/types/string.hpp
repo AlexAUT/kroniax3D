@@ -10,6 +10,9 @@ namespace aw::reflect
 class StringTypeDescriptor : public TypeDescriptor
 {
 public:
+  using UnderlyingType = std::string;
+
+public:
   StringTypeDescriptor() : TypeDescriptor("std::string", sizeof(std::string)) {}
 
   // To be consistent with other typedescriptors

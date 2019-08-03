@@ -55,6 +55,7 @@ bool OFBXLoader::load(StaticMesh& mesh, const char* path)
   {
     if (!parseMesh(scene.get(), i))
     {
+      return false;
     }
   }
 
@@ -109,6 +110,7 @@ bool OFBXLoader::parseMesh(ofbx::IScene* scene, int meshIndex)
   const auto* geometry = mesh->getGeometry();
 
   LOG_D("Mesh name: {}", mesh->name);
+  LOG_D("Mesh type: {}", static_cast<int>(mesh->getType()))
 
   LOG_D("Vertex count {} index count {}", geometry->getVertexCount(), geometry->getIndexCount());
 
