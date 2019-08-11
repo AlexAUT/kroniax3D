@@ -4,6 +4,8 @@
 #include "protocol.hpp"
 #include "types.hpp"
 
+#include <aw/util/time/time.hpp>
+
 #include <SFML/Network/UdpSocket.hpp>
 
 #include <vector>

@@ -26,17 +26,42 @@ bool Connection::tryConnect(Ip hostIp, Port hostPort)
                                                     TransmissionType::Reliable);
 }
 
+void Connection::disconnect()
+{
+  if (!mConnected)
+    return;
+
+  mConnected = false;
+  mChannels.clear();
+  mOutgoingPackets.clear();
+}
+
 void Connection::update(float dt, sf::UdpSocket& socket)
 {
-  for (auto it = mSendQueue.begin(); it != mSendQueue.end(); it++)
+  // mConnectionTime += mConnectionTime + dt;
+
+  for (auto it = mOutgoingPackets.begin(); it != mOutgoingPackets.end(); it++)
   {
     auto& packet = *it;
 
     if (packet.markedForDelivery())
     {
-      std::cout << "send packet!" << std::endl;
-      packet.onSendAttempt();
-      socket.send(packet.payload().data(), packet.payload().size(), mHostIp, mHostPort);
+      if (packet.timeForDelivery < mConnectionTime)
+      {
+        std::cout << "send packet!" << std::endl;
+        packet.onSendAttempt();
+        socket.send(packet.payload().data(), packet.payload().size(), mHostIp, mHostPort);
+        if (packet.inUse())
+        {
+          // packet.timeForDelivery = mConnectionTime + mMetrics.rtt + mMetrics.rttVariance;
+        }
+      }
+    }
+    else if (packet.channelHeader().transmission == TransmissionType::Reliable &&
+             !packet.acknowledged())
+    {
+      // Package did not get acknowledged after maximum retries, abort connection
+      disconnect();
     }
   }
 
@@ -88,10 +113,10 @@ OutgoingPacket& Connection::newPacket(ChannelId id)
 {
   OutgoingPacket* packet = nullptr;
 
-  auto found = std::find_if(mSendQueue.begin(), mSendQueue.end(),
-                            [](const OutgoingPacket& p) { return p.acknowledge(); });
+  auto found = std::find_if(mOutgoingPackets.begin(), mOutgoingPackets.end(),
+                            [](const OutgoingPacket& p) { return !p.inUse(); });
 
-  if (found != mSendQueue.end())
+  if (found != mOutgoingPackets.end())
   {
     found->reset();
     packet = &*found;
@@ -99,7 +124,7 @@ OutgoingPacket& Connection::newPacket(ChannelId id)
   }
   else
   {
-    packet = &mSendQueue.emplace_back();
+    packet = &mOutgoingPackets.emplace_back();
   }
 
   ProtocolHeader protHeader;

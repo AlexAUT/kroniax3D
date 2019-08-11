@@ -4,8 +4,11 @@
 #include <vector>
 
 #include "channel.hpp"
+#include "connectionMetrics.hpp"
 #include "protocol.hpp"
 #include "types.hpp"
+
+#include <aw/util/time/time.hpp>
 
 namespace sf
 {
@@ -21,6 +24,7 @@ public:
   Connection(Ip peerIp, Port peerPort);
 
   bool tryConnect(Ip hostIp, Port hostPort);
+  void disconnect();
 
   bool connected() const { return mConnected; }
 
@@ -37,13 +41,16 @@ private:
   void handleManagementPacket(IncommingPacket& packet);
 
 private:
+  float mConnectionTime{0.f};
   bool mConnected{false};
 
   Ip mHostIp;
   Port mHostPort;
 
+  ConnectionMetrics mMetrics;
+
   std::unordered_map<ChannelId, Channel> mChannels;
 
-  std::vector<OutgoingPacket> mSendQueue;
+  std::vector<OutgoingPacket> mOutgoingPackets;
 };
 } // namespace network

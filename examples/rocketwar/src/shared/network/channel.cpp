@@ -20,8 +20,6 @@ bool Channel::sendPackage(OutgoingPacket& packet, Command command, TransmissionT
 
   if (transmission == TransmissionType::Reliable)
     mNotAcknoledgedPackets.push_back(&packet);
-  else
-    packet.acknowledge(true);
 
   return true;
 }
@@ -41,7 +39,7 @@ void Channel::receive(IncommingPacket& packet)
 
   if (header.transmission == TransmissionType::Reliable)
   {
-    mAcknowledgeList.push_back(header.packetId);
+    mAcknowledge.packetIds.push_back(header.packetId);
   }
 
   switch (header.command)
@@ -63,33 +61,26 @@ void Channel::update(float dt) {}
 
 void Channel::sendAcknowledges(OutgoingPacket& packet)
 {
-  if (!mAcknowledgeList.empty())
+  if (!mAcknowledge.packetIds.empty())
   {
-    Acknowledge akn;
-    akn.packetIds = mAcknowledgeList;
-    packet.zip(akn);
+    packet.zip(mAcknowledge);
     auto result = sendPackage(packet, Command::Acknowledge, TransmissionType::Unreliable);
     if (result)
-      mAcknowledgeList.clear();
-  }
-  else
-  {
-    packet.acknowledge(true);
+      mAcknowledge.packetIds.clear();
   }
 }
 
 void Channel::onAcknowledgePacket(IncommingPacket& packet)
 {
-  Acknowledge akn;
-  packet.unzip(akn);
+  packet.unzip(mIncommingAcknowledge);
 
-  for (auto& packetId : akn.packetIds)
+  for (auto& packetId : mIncommingAcknowledge.packetIds)
   {
     for (auto packet : mNotAcknoledgedPackets)
     {
       if (packet->id() == packetId)
       {
-        packet->acknowledge(true);
+        packet->acknowledge();
         std::cout << "Akn " << packetId << std::endl;
       }
     }

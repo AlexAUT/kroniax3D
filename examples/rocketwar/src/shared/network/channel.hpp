@@ -17,7 +17,7 @@ public:
 
   void update(float dt);
 
-  bool hasAcknowledgesToSend() const { return !mAcknowledgeList.empty(); }
+  bool hasAcknowledgesToSend() const { return !mAcknowledge.packetIds.empty(); }
   void sendAcknowledges(OutgoingPacket& packet);
 
 private:
@@ -27,8 +27,9 @@ private:
   aw::uint16 mSendPacketNumber{0};
 
   std::vector<OutgoingPacket*> mNotAcknoledgedPackets;
-  std::vector<IncommingPacket*> mWaitingPackets;
-  std::vector<aw::uint16> mAcknowledgeList;
+
+  packet::Acknowledge mAcknowledge;
+  packet::Acknowledge mIncommingAcknowledge;
 };
 
 } // namespace network

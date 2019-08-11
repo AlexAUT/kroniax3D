@@ -5,7 +5,7 @@
 #include <aw/engine/window/window.hpp>
 #include <aw/util/file/pathRegistry.hpp>
 #include <aw/util/message/bus.hpp>
-#include <aw/util/time/clock.hpp>
+#include <aw/util/time/stopWatch.hpp>
 
 namespace aw::engine
 {
@@ -37,6 +37,6 @@ private:
   Window mMainWindow{mConfig, mMessageBus};
   StateMachine mStateMachine;
 
-  Clock mFrameClock;
+  StopWatch mFrameTimer;
 };
 } // namespace aw::engine

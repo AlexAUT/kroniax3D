@@ -46,12 +46,15 @@ struct ChannelHeader
   REFLECT()
 };
 
+namespace packet
+{
 struct Acknowledge
 {
   std::vector<aw::uint16> packetIds;
 
   REFLECT()
 };
+} // namespace packet
 
 } // namespace network
 
@@ -68,6 +71,6 @@ REFLECT_MEMBER(transmission)
 REFLECT_MEMBER(packetId)
 REFLECT_END(network::ChannelHeader)
 
-REFLECT_BEGIN(network::Acknowledge)
+REFLECT_BEGIN(network::packet::Acknowledge)
 REFLECT_MEMBER(packetIds)
-REFLECT_END(network::Acknowledge)
+REFLECT_END(network::packet::Acknowledge)

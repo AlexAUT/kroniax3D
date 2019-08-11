@@ -42,11 +42,11 @@ int Engine::run()
 
 void Engine::step()
 {
-  const auto dt = mFrameClock.restart();
+  auto dt = mFrameTimer.restart();
 
   mMainWindow.handleEvents();
 
-  mStateMachine.update(dt);
+  mStateMachine.update(0);
   mStateMachine.render();
 
   mMainWindow.display();

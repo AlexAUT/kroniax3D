@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include <aw/util/time/clock.hpp>
+#include <aw/util/time/stopWatch.hpp>
 
 #include <fmt/printf.h>
 
@@ -31,11 +31,15 @@ Server::~Server()
 
 bool Server::run()
 {
+  float tickRate{1.f / 8.f};
+
+  aw::StopWatch clock;
   while (mRunning)
   {
-    mHost.update(0);
+    auto elapsedTime = clock.restart();
+    mHost.update(tickRate);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    std::this_thread::sleep_for(std::chrono::duration<float>(elapsedTime - tickRate));
   }
   /*
     mSocket.setBlocking(true);
@@ -85,25 +89,7 @@ bool Server::run()
   return true;
 }
 
-void Server::gameThreadFunc()
-{
-  const float TICK_RATE = 1.f / 8.f;
-
-  aw::Clock clock;
-  while (mRunning)
-  {
-    clock.restart();
-    mGame.update(TICK_RATE);
-
-    auto updateTime = clock.restart();
-
-    if (updateTime < TICK_RATE)
-    {
-      std::this_thread::sleep_for(
-          std::chrono::milliseconds(static_cast<int>((TICK_RATE - updateTime) * 1000)));
-    }
-  }
-}
+void Server::gameThreadFunc() {}
 
 void Server::onClientConnect(ClientConnect message, sf::IpAddress ip, unsigned short port)
 {
